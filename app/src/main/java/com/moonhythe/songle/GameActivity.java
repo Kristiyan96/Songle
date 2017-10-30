@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -21,16 +22,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+                                                              GoogleApiClient.ConnectionCallbacks,
+                                                              GoogleApiClient.OnConnectionFailedListener,
+                                                              LocationListener {
+    private static final String TAG = "GameActivity";
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
-    private boolean mLocationPermissionGranted = false;
+    private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private static final String TAG = "GameActivity";
+    private boolean mLocationPermissionGranted = false;
+
+
+    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10*1000)
+                .setFastestInterval(1*1000);
+
     }
 
     @Override
@@ -97,10 +107,22 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location current) {
-        System.out.println(
-                " [onLocationChanged] Lat/long now (" +
-                String.valueOf(current.getLatitude()) + "," +
-                String.valueOf(current.getLongitude()) + ")");
+        int approval = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if(approval == PackageManager.PERMISSION_GRANTED){
+            Log.d(TAG, current.toString());
+
+            // Save location
+            double lat = current.getLatitude(),
+                    lng = current.getLongitude();
+            LatLng currentLocation = new LatLng(lat, lng);
+
+            mMap.setMyLocationEnabled(true);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        }
+        else{
+            Log.i(TAG,"No permission to change location. (onLocationChanged)");
+        }
 
     }
 
