@@ -19,7 +19,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
                                                               GoogleApiClient.ConnectionCallbacks,
@@ -38,6 +37,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate enter");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -75,6 +75,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected void createLocationRequest() {
+        Log.d(TAG, "createLocationRequest enter");
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(1000);
@@ -82,6 +83,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
         }
@@ -89,6 +91,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        Log.d(TAG, "onConnected enter");
         try { createLocationRequest(); }
         catch (java.lang.IllegalStateException ise) {
             System.out.println("IllegalStateException thrown [onConnected]");
@@ -107,23 +110,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location current) {
-        int approval = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if(approval == PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, current.toString());
-
+        Log.d(TAG, "onLocationChanged enter");
+        if(mLocationPermissionGranted){
             // Save location
             double lat = current.getLatitude(),
                     lng = current.getLongitude();
             LatLng currentLocation = new LatLng(lat, lng);
 
-            mMap.setMyLocationEnabled(true);
+            // Move camera smoothly
             mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
         }
         else{
             Log.i(TAG,"No permission to change location. (onLocationChanged)");
         }
-
     }
 
     @Override
@@ -138,16 +137,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "onMapReady enter");
         mMap = googleMap;
-        // Add a marker in Sydney and move the camera
-        LatLng edinburgh = new LatLng(55.944803, -3.183753);
-        mMap.addMarker(new MarkerOptions().position(edinburgh).title("Marker in Edinburgh"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(edinburgh));
         try {
             mMap.setMyLocationEnabled(true);
         } catch (SecurityException se) {
             System.out.println("Security exception thrown [onMapReady]");
         }
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 }
