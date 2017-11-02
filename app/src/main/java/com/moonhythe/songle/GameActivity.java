@@ -1,13 +1,17 @@
 package com.moonhythe.songle;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -21,26 +25,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
-                                                              GoogleApiClient.ConnectionCallbacks,
-                                                              GoogleApiClient.OnConnectionFailedListener,
-                                                              LocationListener {
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+
     private static final String TAG = "GameActivity";
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private Location mLastLocation;
-    private boolean mLocationPermissionGranted = false;
 
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
-    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
+    public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate enter");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -48,101 +51,121 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
+                    .addOnConnectionFailedListener( this )
                     .addApi(LocationServices.API)
-                    .build();
+                    . build () ;
         }
 
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10*1000)
-                .setFastestInterval(1*1000);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    protected void createLocationRequest() {
-        Log.d(TAG, "createLocationRequest enter");
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.d(TAG, "onConnected enter");
-        try { createLocationRequest(); }
-        catch (java.lang.IllegalStateException ise) {
-            System.out.println("IllegalStateException thrown [onConnected]");
-        }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            mLastLocation =
-                    LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location current) {
-        Log.d(TAG, "onLocationChanged enter");
-        if(mLocationPermissionGranted){
-            // Save location
-            double lat = current.getLatitude(),
-                    lng = current.getLongitude();
-            LatLng currentLocation = new LatLng(lat, lng);
-
-            // Move camera smoothly
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        }
-        else{
-            Log.i(TAG,"No permission to change location. (onLocationChanged)");
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int flag) {
-        System.out.println(" >>>> onConnectionSuspended");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        System.out.println(" >>>> onConnectionFailed");
+                .setInterval(3000)
+                .setFastestInterval(1000);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady enter");
         mMap = googleMap;
-        try {
+        mMap.setMaxZoomPreference(19);
+        mMap.setMinZoomPreference(16);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (!checkPermission(this)) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_LOCATION_REQUEST_CODE);
+        }
+        else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+    }
+
+    public static boolean checkPermission(final Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_LOCATION_REQUEST_CODE: {
+                Log.i(TAG,"Permission granted, getting location");
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (!checkPermission(this)) {
+                        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    }
+                } else {
+                    Toast.makeText(GameActivity.this, "Please, give your permission.",
+                            Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        if (checkPermission(this)){
             mMap.setMyLocationEnabled(true);
-        } catch (SecurityException se) {
-            System.out.println("Security exception thrown [onMapReady]");
+
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            LatLng latlng = new LatLng(lat, lng);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+        }
+        else {
+            Log.i(TAG,"No permission to handle location.");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+        Log.i(TAG, "Resume maps activity");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "Pause maps activity");
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+        Log.i(TAG, "Stop maps activity");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Location services suspended. Please reconnect.");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
+            Toast.makeText(GameActivity.this, "Connection failed. Please enable internet.",
+                    Toast.LENGTH_LONG).show();
         }
     }
 }
