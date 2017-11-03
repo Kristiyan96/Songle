@@ -9,18 +9,19 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by kris on 03/11/17.
+ * Parses the info for a specified by the constructor song
  */
 
 public class SongXmlParser {
 
     private static final String ns = null;
+    // TODO: Pull this song_number from the shared preferences
+    String song_number = "04";
 
-    public List parse(InputStream in) throws XmlPullParserException, IOException {
+    public Song parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -32,8 +33,8 @@ public class SongXmlParser {
         }
     }
 
-    private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List songs = new ArrayList();
+    private Song readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Song song = null;
 
         parser.require(XmlPullParser.START_TAG, ns, "Songs");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -41,14 +42,13 @@ public class SongXmlParser {
                 continue;
             }
             String name = parser.getName();
-            // Starts by looking for the entry tag
             if (name.equals("Song")) {
-                songs.add(readSong(parser));
+                song = readSong(parser);
             } else {
                 skip(parser);
             }
         }
-        return songs;
+        return song;
     }
 
     private Song readSong(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -65,6 +65,11 @@ public class SongXmlParser {
             String tag_name = parser.getName();
             if (tag_name.equals("Number")) {
                 number = readXml(parser, "Number");
+                // check if the read song is theone we are looking for
+                // if not, skip reading forward and go to the next song
+                if (number != song_number) {
+                    continue;
+                }
             } else if (tag_name.equals("Artist")) {
                 artist = readXml(parser, "Artist");
             } else if (tag_name.equals("Title")) {
