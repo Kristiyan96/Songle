@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -31,13 +33,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String TAG = "GameActivity";
 
+    // Locations
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
     public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
+
+    //Slide up menu
+    private SlidingUpPanelLayout slidingLayout;
 
 
     @Override
@@ -60,6 +64,38 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(3000)
                 .setFastestInterval(1000);
+
+        slidingLayout = findViewById(R.id.sliding_layout);
+        slidingLayout.setPanelSlideListener(onSlideListener());
+    }
+
+    private SlidingUpPanelLayout.PanelSlideListener onSlideListener() {
+        return new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
+            }
+        };
     }
 
     @Override
