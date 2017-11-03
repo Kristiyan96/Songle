@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -30,18 +30,18 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".GameActivity"
+            android:name=".Activity.GameActivity"
             android:label="@string/title_activity_game"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".HistoryActivity"
+            android:name=".Activity.HistoryActivity"
             android:label="@string/title_activity_history"
             android:theme="@style/AppTheme"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".InstructionsActivity"
+            android:name=".Activity.InstructionsActivity"
             android:label="@string/title_activity_instructions"
             android:theme="@style/AppTheme"
             android:launchMode="singleTask"

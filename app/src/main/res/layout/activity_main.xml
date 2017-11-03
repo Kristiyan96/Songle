@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/icons"
     android:orientation="vertical"
-    tools:context="com.moonhythe.songle.MainActivity">
+    tools:context="com.moonhythe.songle.Activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

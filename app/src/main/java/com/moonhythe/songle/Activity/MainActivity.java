@@ -1,4 +1,4 @@
-package com.moonhythe.songle;
+package com.moonhythe.songle.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+
+import com.moonhythe.songle.R;
 
 public class MainActivity extends Activity {
 

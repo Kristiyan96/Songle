@@ -1,4 +1,4 @@
-package com.moonhythe.songle;
+package com.moonhythe.songle.Activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.moonhythe.songle.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -57,7 +58,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener( this )
                     .addApi(LocationServices.API)
-                    . build () ;
+                    .build() ;
         }
 
         mLocationRequest = LocationRequest.create()
