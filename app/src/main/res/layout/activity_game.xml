@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.moonhythe.songle.GameActivity">
+    tools:context="com.moonhythe.songle.GameActivity"
+    android:orientation="vertical">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
@@ -27,14 +27,30 @@
             android:layout_height="match_parent"
             map:cameraZoom="17"
             map:mapType="normal"
-            tools:context="com.moonhythe.songle.GameActivity" />
+            tools:context="com.moonhythe.songle.GameActivity"
+            tools:layout="@layout/activity_game">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:text="Time:"
+                android:textSize="20dp"
+                android:textColor="@color/primary_dark"
+                android:gravity="left"
+                android:padding="10dp"
+                android:id="@+id/total_time"
+                />
+
+
+        </fragment>
 
         <!-- SLIDING LAYOUT -->
         <LinearLayout
             android:id="@+id/dragView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primary_dark"
+            android:background="@color/primary"
             android:clickable="true"
             android:focusable="false"
             android:orientation="vertical">
@@ -42,13 +58,32 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@color/primary_dark">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Hello"
+                    android:textSize="20dp"
+                    android:textColor="@color/accent"
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:id="@+id/combo"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Collect 3 more in 2:00"
+                    android:textColor="@color/accent"
+                    android:gravity="right"
+                    android:padding="10dp"
+                    android:textSize="20dp"/>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFCCCC">
+                android:layout_height="wrap_content">
             </LinearLayout>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
