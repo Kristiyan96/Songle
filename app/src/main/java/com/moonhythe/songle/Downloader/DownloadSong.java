@@ -3,7 +3,7 @@ package com.moonhythe.songle.Downloader;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.moonhythe.songle.Parser.SongXmlParser;
+import com.moonhythe.songle.Parser.SongParser;
 import com.moonhythe.songle.Structure.Song;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -40,7 +40,7 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
 
     private Song loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        SongXmlParser xmlParser = new SongXmlParser();
+        SongParser xmlParser = new SongParser();
         Song song = null;
         String number = null;
         String artist = null;

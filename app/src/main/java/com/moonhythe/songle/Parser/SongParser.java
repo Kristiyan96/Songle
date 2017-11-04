@@ -15,7 +15,7 @@ import java.io.InputStream;
  * Parses the info for a specified by the constructor song
  */
 
-public class SongXmlParser {
+public class SongParser {
 
     private static final String ns = null;
     // TODO: Pull this song_number from the shared preferences
