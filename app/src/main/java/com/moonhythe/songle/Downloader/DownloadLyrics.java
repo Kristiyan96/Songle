@@ -10,4 +10,5 @@ import com.moonhythe.songle.Structure.Lyrics;
 
 public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
 
+    private static final String TAG = DownloadLyrics.class.getSimpleName();
 }

@@ -64,18 +64,18 @@ public class SongParser {
             }
             String tag_name = parser.getName();
             if (tag_name.equals("Number")) {
-                number = readXml(parser, "Number");
+                number = readString(parser, "Number");
                 // check if the read song is theone we are looking for
                 // if not, skip reading forward and go to the next song
                 if (number != song_number) {
                     continue;
                 }
             } else if (tag_name.equals("Artist")) {
-                artist = readXml(parser, "Artist");
+                artist = readString(parser, "Artist");
             } else if (tag_name.equals("Title")) {
-                title = readXml(parser, "Title");
+                title = readString(parser, "Title");
             } else if (tag_name.equals("Link")) {
-                link = readXml(parser, "Link");
+                link = readString(parser, "Link");
             } else {
                 skip(parser);
             }
@@ -83,7 +83,7 @@ public class SongParser {
         return new Song(number, artist, title, link);
     }
 
-    private String readXml(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
+    private String readString(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, tag);
         String str = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, tag);
