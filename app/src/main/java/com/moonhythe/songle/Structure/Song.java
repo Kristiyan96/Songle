@@ -12,6 +12,9 @@ public class Song {
     private String title;
     private String link;
 
+    public Song() {
+    }
+
     public Song(String number, String artist, String title, String link) {
         this.number = number;
         this.artist = artist;

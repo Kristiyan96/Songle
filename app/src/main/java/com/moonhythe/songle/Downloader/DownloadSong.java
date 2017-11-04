@@ -41,20 +41,14 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
     private Song loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
         SongParser xmlParser = new SongParser();
-        Song song = null;
-
-        Log.i(TAG, "Begin loadXmlFromNetwork");
-
         try {
             stream = downloadUrl(urlString);
-            song = xmlParser.parse(stream);
+            return xmlParser.parse(stream);
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
-        Log.i(TAG, "Song downloaded and parsed");
-        return song;
     }
 
     private InputStream downloadUrl(String urlString) throws IOException {
@@ -67,5 +61,10 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
         // Starts the query
         conn.connect();
         return conn.getInputStream();
+    }
+
+    @Override
+    protected void onPostExecute(Song song) {
+
     }
 }

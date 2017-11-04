@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.moonhythe.songle.Downloader.DownloadSong;
 import com.moonhythe.songle.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -84,7 +85,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onPanelExpanded(View view) {
-
+                new DownloadSong().execute("http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/songs.xml");
+                Log.i(TAG, "Started downloading song");
             }
 
             @Override
