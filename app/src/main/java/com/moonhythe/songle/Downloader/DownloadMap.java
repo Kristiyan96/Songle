@@ -45,10 +45,6 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
         // Instantiate the parser
         PlacemarkerParser xmlParser = new PlacemarkerParser();
         List<Placemark> placemarks = null;
-        String name = null;
-        String description = null;
-        String styleUrl = null;
-        String point = null;
 
         Log.i(TAG, "Begin loadXmlFromNetwork");
 

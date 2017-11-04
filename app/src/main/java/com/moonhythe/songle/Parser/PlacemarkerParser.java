@@ -35,7 +35,7 @@ public class PlacemarkerParser {
     }
 
     private List<Placemark> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List placemarks = new ArrayList();
+        List<Placemark> placemarks = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, ns, "kml");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -98,9 +98,7 @@ public class PlacemarkerParser {
         return result;
     }
 
-    // Processes point tags in the feed.
     private LatLng readPoint(XmlPullParser parser) throws IOException, XmlPullParserException {
-
 
         parser.require(XmlPullParser.START_TAG, ns, "Point");
         String coordinates = null;
@@ -116,7 +114,7 @@ public class PlacemarkerParser {
             }
         }
 
-        String[] latlong =  coordinates.split(",");
+        String[] latlong = coordinates.split(",");
         double latitude = Double.parseDouble(latlong[1]);
         double longitude = Double.parseDouble(latlong[0]);
         return new LatLng(latitude,longitude);

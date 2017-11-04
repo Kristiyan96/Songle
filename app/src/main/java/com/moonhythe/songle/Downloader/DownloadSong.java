@@ -42,10 +42,7 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
         InputStream stream = null;
         SongParser xmlParser = new SongParser();
         Song song = null;
-        String number = null;
-        String artist = null;
-        String title = null;
-        String link = null;
+
         Log.i(TAG, "Begin loadXmlFromNetwork");
 
         try {
