@@ -22,8 +22,6 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
 
     private static final String TAG = DownloadSong.class.getSimpleName();
 
-    String baseUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/songs.xml";
-
     @Override
     protected Song doInBackground(String... urls) {
         Song fail = null;
@@ -41,14 +39,17 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
     private Song loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
         SongParser xmlParser = new SongParser();
+        Song result = null;
+
         try {
             stream = downloadUrl(urlString);
-            return xmlParser.parse(stream);
+            result =  xmlParser.parse(stream);
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
+        return result;
     }
 
     private InputStream downloadUrl(String urlString) throws IOException {

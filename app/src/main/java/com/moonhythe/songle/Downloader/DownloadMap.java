@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,10 +22,6 @@ import java.util.List;
 public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
 
     private static final String TAG = DownloadMap.class.getSimpleName();
-
-    private String song_number;
-    private String combo;
-    String baseUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song_number + "/map" + combo + ".kml";
 
     @Override
     protected List<Placemark> doInBackground(String... urls){
@@ -42,22 +39,18 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
 
     private List<Placemark> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        // Instantiate the parser
         PlacemarkerParser xmlParser = new PlacemarkerParser();
-        List<Placemark> placemarks = null;
-
-        Log.i(TAG, "Begin loadXmlFromNetwork");
+        List<Placemark>  result = new ArrayList<>();
 
         try {
             stream = downloadUrl(urlString);
-            placemarks = xmlParser.parse(stream);
+            result =  xmlParser.parse(stream);
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
-        Log.i(TAG, "Markers downloaded and parsed");
-        return placemarks;
+        return result;
     }
 
     private InputStream downloadUrl(String urlString) throws IOException {
@@ -71,5 +64,9 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
         conn.connect();
         Log.i(TAG, "Markers downloaded");
         return conn.getInputStream();
+    }
+
+    @Override
+    protected void onPostExecute(List<Placemark> placemarks) {
     }
 }

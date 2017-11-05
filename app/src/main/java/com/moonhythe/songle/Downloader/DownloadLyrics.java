@@ -20,14 +20,13 @@ import java.net.URL;
 public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
 
     private static final String TAG = DownloadLyrics.class.getSimpleName();
-    private String song_number = null;
-    private String baseUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song_number + "/words.txt";
 
     @Override
     protected Lyrics doInBackground(String... urls) {
+        Log.i(TAG, "Started doInBackground");
         Lyrics fail = null;
         try {
-            return loadXmlFromNetwork(urls[0]);
+            return loadTxtFromNetwork(urls[0]);
         } catch (IOException e) {
             Log.i(TAG, "IOException at loadingXmlFromNetwork");
             return fail;   // TO DO handle exception
@@ -37,34 +36,30 @@ public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
         }
     }
 
-    private Lyrics loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
+    private Lyrics loadTxtFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        LyricsParser xmlParser = new LyricsParser();
-        Lyrics lyrics = null;
-        Log.i(TAG, "Begin loadXmlFromNetwork");
+        LyricsParser txtParser = new LyricsParser();
+        Lyrics result = null;
 
         try {
             stream = downloadUrl(urlString);
-            lyrics = xmlParser.parse(stream);
+            result = txtParser.parse(stream);
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
-        Log.i(TAG, "Lyrics downloaded and parsed");
-        return lyrics;
+        return result;
     }
 
     private InputStream downloadUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setReadTimeout(10000);
+        conn.setConnectTimeout(15000);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
-        // Starts the query
         conn.connect();
-        Log.i(TAG, "Lyrics downloaded");
         return conn.getInputStream();
     }
 }

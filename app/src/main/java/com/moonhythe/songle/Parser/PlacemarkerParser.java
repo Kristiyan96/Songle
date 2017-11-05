@@ -1,5 +1,6 @@
 package com.moonhythe.songle.Parser;
 
+import android.util.Log;
 import android.util.Xml;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -28,23 +29,22 @@ public class PlacemarkerParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
+            parser.nextTag();
             return readFeed(parser);
         } finally {
             in.close();
         }
     }
 
-    private List<Placemark> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Placemark> placemarks = new ArrayList();
+    private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List placemarks = new ArrayList();
 
-        parser.require(XmlPullParser.START_TAG, ns, "kml");
+        parser.require(XmlPullParser.START_TAG, ns, "Document");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String name = parser.getName();
-            // Starts by looking for the entry tag
-            if (name.equals("Placemark")) {
+            if (parser.getName().equals("Placemark")) {
                 placemarks.add(readPlacemark(parser));
             } else {
                 skip(parser);
@@ -55,36 +55,41 @@ public class PlacemarkerParser {
 
     private Placemark readPlacemark(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "Placemark");
-
-        String name = null;
-        String description = null;
-        String styleUrl = null;
-        LatLng point = null;
+        Placemark placemark = new Placemark();
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String tag_name = parser.getName();
-            if (tag_name.equals("name")) {
-                name = readString(parser);
-            } else if (tag_name.equals("description")) {
-                description = readString(parser);
-            } else if (tag_name.equals("styleUrl")){
-                styleUrl = readString(parser);
-            } else if (tag_name.equals("Point")) {
-                point = readPoint(parser);
-            } else {
-                skip(parser);
+            switch(tag_name) {
+                case "name":
+                    placemark.setName(readString(parser, tag_name));
+                    break;
+                case "description":
+                    placemark.setDescription(readString(parser, tag_name));
+                    break;
+                case "styleUrl":
+                    placemark.setStyleUrl(readString(parser, tag_name));
+                    break;
+                case "Point":
+                    placemark.setPoint(readPoint(parser));
+                    break;
+                default:
+                    skip(parser);
+                    break;
             }
         }
-        return new Placemark(name, description, styleUrl, point);
+        Log.i(TAG, placemark.getName());
+        Log.i(TAG, placemark.getDescription());
+
+        return placemark;
     }
 
-    private String readString(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "description");
+    private String readString(XmlPullParser parser, String tag_name) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, tag_name);
         String description = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "description");
+        parser.require(XmlPullParser.END_TAG, ns, tag_name);
         return description;
     }
 

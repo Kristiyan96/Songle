@@ -1,14 +1,13 @@
 package com.moonhythe.songle.Parser;
 
-import android.util.Xml;
-
 import com.moonhythe.songle.Structure.Lyrics;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kris on 04/11/17.
@@ -20,28 +19,23 @@ public class LyricsParser {
     private static final String ns = null;
 
     public Lyrics parse(InputStream in) throws XmlPullParserException, IOException {
+        Lyrics result;
         try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-            return readText(parser);
+            result = readText(in);
         } finally {
             in.close();
         }
+        return result;
     }
 
-    // TODO: Finish this method when testing
-    private Lyrics readText(XmlPullParser parser) throws IOException,
-            XmlPullParserException {
-        Lyrics result = null;
-        String[] lines = null;
-        int row = 0;
-        if (parser.next() == XmlPullParser.TEXT) {
-            lines[row] = parser.getText();
-            parser.nextTag();
-            row++;
+    private Lyrics readText(InputStream in){
+        List<String[]> lyrics = new ArrayList<String[]>();
+        java.util.Scanner s = new java.util.Scanner(in).useDelimiter("\\A");
+
+        while(s.hasNext()){
+            lyrics.add(s.nextLine().split("\\s+"));
         }
-        return result;
+
+        return new Lyrics(lyrics);
     }
 }
