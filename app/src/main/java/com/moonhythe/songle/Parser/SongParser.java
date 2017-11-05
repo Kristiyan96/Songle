@@ -20,6 +20,7 @@ public class SongParser {
 
     private static final String TAG = SongParser.class.getSimpleName();
     private static final String ns = null;
+
     // TODO: Pull this song_number from the shared preferences
     String song_number = "04";
 

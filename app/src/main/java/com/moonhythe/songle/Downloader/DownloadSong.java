@@ -43,7 +43,7 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
 
         try {
             stream = downloadUrl(urlString);
-            result =  xmlParser.parse(stream);
+            result = xmlParser.parse(stream);
         } finally {
             if (stream != null) {
                 stream.close();

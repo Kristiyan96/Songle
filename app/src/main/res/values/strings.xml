@@ -15,4 +15,6 @@
     <string name="show">Show</string>
     <string name="slide">Slide</string>
     <string name="hide">Hide</string>
+
+    <string name="PLAYED_SONGS">PLAYED_SONGS</string>
 </resources>
