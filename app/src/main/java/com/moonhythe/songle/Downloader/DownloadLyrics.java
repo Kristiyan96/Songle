@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.moonhythe.songle.Parser.LyricsParser;
-import com.moonhythe.songle.Structure.Game;
+import com.moonhythe.songle.Logic.GameInfo;
 import com.moonhythe.songle.Structure.Lyrics;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,11 +23,11 @@ public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
 
     private static final String TAG = DownloadLyrics.class.getSimpleName();
     private Context context;
-    Game gameManager;
+    GameInfo gameInfoManager;
 
-    public DownloadLyrics(Context context, Game manager) {
+    public DownloadLyrics(Context context, GameInfo manager) {
         this.context = context;
-        this.gameManager = manager;
+        this.gameInfoManager = manager;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
 
     @Override
     protected void onPostExecute(Lyrics lyrics) {
-        //Alert Game that the lyrics are downloaded
-        gameManager.onLyricsDownloaded(lyrics);
+        //Alert GameInfo that the lyrics are downloaded
+        gameInfoManager.onLyricsDownloaded(lyrics);
     }
 }

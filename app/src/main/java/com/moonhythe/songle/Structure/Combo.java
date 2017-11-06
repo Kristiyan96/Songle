@@ -51,5 +51,19 @@ public class Combo {
         }
     }
 
+    public int getCombo() {
+        return combo;
+    }
 
+    public void setCombo(int combo) {
+        this.combo = combo;
+    }
+
+    public int getCollected_words() {
+        return collected_words;
+    }
+
+    public void setCollected_words(int collected_words) {
+        this.collected_words = collected_words;
+    }
 }

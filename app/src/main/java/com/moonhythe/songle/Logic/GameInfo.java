@@ -1,12 +1,19 @@
-package com.moonhythe.songle.Structure;
+package com.moonhythe.songle.Logic;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
 import com.moonhythe.songle.Downloader.DownloadSong;
+import com.moonhythe.songle.R;
+import com.moonhythe.songle.Structure.Combo;
+import com.moonhythe.songle.Structure.Lyrics;
+import com.moonhythe.songle.Structure.Placemark;
+import com.moonhythe.songle.Structure.Preference;
+import com.moonhythe.songle.Structure.Song;
 
 import java.util.List;
 
@@ -14,17 +21,17 @@ import java.util.List;
  * Created by kris on 05/11/17.
  */
 
-public class Game extends Activity {
+public class GameInfo extends Activity {
 
-    private static final String TAG = Game.class.getSimpleName();
+    private static final String TAG = GameInfo.class.getSimpleName();
     Context context = null;
 
     Song song;
     Lyrics lyrics;
     Combo combo_1, combo_2, combo_3, combo_4, combo_5;
 
-    public Game(Context context) {
-        Log.i(TAG, "Game created");
+    public GameInfo(Context context) {
+        Log.i(TAG, "GameInfo created");
         this.context = context;
         setupGame(0);
     }
@@ -41,12 +48,13 @@ public class Game extends Activity {
             case 2:
                 setupCombo();
                 break;
-
+            case 3:
+                startGame();
         }
     }
 
     public void downloadSong(){
-        // Download and parse and pick a song
+        // Pick, download and parse a song
         String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/songs.xml";
         new DownloadSong(context, this).execute(stringUrl);
     }
@@ -67,7 +75,6 @@ public class Game extends Activity {
     }
 
     public void onLyricsDownloaded(Lyrics lyrics){
-        Log.i(TAG, "Lyrics downloaded");
         this.lyrics = lyrics;
 
         setupGame(2);
@@ -77,7 +84,6 @@ public class Game extends Activity {
         String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
         for(int i=1;i<=5;i++){
             stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
-            Log.i(TAG, "Downloading map for combo " + i);
             stringUrl+= (i + ".kml");
             new DownloadMap(context, this, i).execute(stringUrl);
         }
@@ -106,9 +112,32 @@ public class Game extends Activity {
                 combo_5 = new Combo(5, placemarks);
                 break;
         }
+        setupGame(3);
+    }
+
+    public void startGame(){
+        TextView txtView = (TextView) ((Activity)context).findViewById(R.id.combo);
+        txtView.setText("1");
     }
 
     public Lyrics getLyrics() {
         return lyrics;
+    }
+
+    public Combo getCombo(int comb) {
+        switch(comb){
+            case 1:
+                return combo_1;
+            case 2:
+                return combo_2;
+            case 3:
+                return combo_3;
+            case 4:
+                return combo_4;
+            case 5:
+                return combo_5;
+            default:
+                return combo_1;
+        }
     }
 }
