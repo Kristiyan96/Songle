@@ -1,8 +1,9 @@
 package com.moonhythe.songle.Parser;
 
-import android.util.Log;
+import android.content.Context;
 import android.util.Xml;
 
+import com.moonhythe.songle.Structure.Preference;
 import com.moonhythe.songle.Structure.Song;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -10,6 +11,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by kris on 03/11/17.
@@ -20,6 +24,11 @@ public class SongParser {
 
     private static final String TAG = SongParser.class.getSimpleName();
     private static final String ns = null;
+    private Context context;
+
+    public SongParser(Context context) {
+        this.context = context;
+    }
 
     // TODO: Pull this song_number from the shared preferences
     String song_number = "04";
@@ -38,8 +47,12 @@ public class SongParser {
 
     private Song readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         Song song = null;
+        String all_songs_string = "";
+        List<Song> album = new ArrayList<Song>();
+
+
+        // Iterate songs and add them to a list
         parser.require(XmlPullParser.START_TAG, ns, "Songs");
-        // Iterate all songs
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -47,16 +60,49 @@ public class SongParser {
             String name = parser.getName();
             if (name.equals("Song")) {
                 song = readSong(parser);
-                Log.i(TAG, song.getArtist());
-                if(song.getNumber().equals(song_number)) {
-                    return song;
-                }
+                all_songs_string += song.getNumber()+" ";
+                album.add(song);
             } else {
                 skip(parser);
             }
         }
-        // if song not found
-        return null;
+
+        String[] toPickFrom;
+        String guessed_songs_string = Preference.getSharedPreferenceString(context, "GUESSED_SONGS", "");
+        if(guessed_songs_string.length() != 0){
+            toPickFrom = removePlayedSongs(guessed_songs_string, all_songs_string);
+        } else{
+            toPickFrom = all_songs_string.split(" ");
+        }
+
+        // picking a random song and returning it
+        Random rand = new Random();
+        return album.get(rand.nextInt(10000)%toPickFrom.length);
+    }
+
+
+    public String[] removePlayedSongs(String played, String all){
+        String[] played_songs, all_songs;
+        int counter = 0;
+        boolean duplicate = false;
+
+        played_songs = played.split(" ");
+        all_songs = all.split(" ");
+
+        String[] result = new String[all_songs.length - played_songs.length];
+
+        // O(n^2) but I rely on the fact that all_songs*played_songs is rather small
+        for(int i=0; i<all_songs.length; i++){
+            for(int k=0; k<played_songs.length; k++){
+                if(Integer.parseInt(played_songs[k]) == Integer.parseInt(all_songs[i])) duplicate = true;
+            }
+            if(!duplicate){
+                result[counter] = all_songs[i];
+                counter++;
+            }
+            duplicate = false;
+        }
+        return result;
     }
 
     private Song readSong(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -86,7 +132,6 @@ public class SongParser {
                     break;
             }
         }
-        Log.i(TAG, song.getArtist());
         return song;
     }
 

@@ -10,6 +10,7 @@ public class Placemark {
 
     static private String TAG = Placemark.class.getSimpleName();
     private String name = null;
+    private String word = null;
     private String description = null;
     private String styleUrl = null;
     private LatLng point = null;
@@ -24,12 +25,21 @@ public class Placemark {
         this.point = point;
     }
 
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 
     public String getDescription() {

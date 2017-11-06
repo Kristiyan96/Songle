@@ -7,8 +7,12 @@ import java.util.Set;
 
 /**
  * Created by kris on 05/11/17.
+ *
+ * USAGE:
+ *
+ *         Preference.setSharedPreferenceString(this, "Key", "Value");
+ *         Log.i(TAG, Preference.getSharedPreferenceString(this, "Key", "Default value"));
  */
-
 public class Preference {
     private final static String PREF_FILE = "PREF";
 
@@ -107,7 +111,7 @@ public class Preference {
      * @param defValue - Default value to be returned if shared preference isn't found.
      * @return value - String containing value of the shared preference if found.
      */
-    public static Set<String> getSharedPreferenceString(Context context, String key, Set<String> defValue) {
+    public static Set<String> getSharedPreferenceStringSet(Context context, String key, Set<String> defValue) {
         SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
         return settings.getStringSet(key, defValue);
     }

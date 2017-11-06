@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,9 +23,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.R;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.moonhythe.songle.Structure.Game;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -41,10 +39,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
-
-    //Slide up menu
-    private SlidingUpPanelLayout slidingLayout;
-
+    Game gameManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,38 +62,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setInterval(3000)
                 .setFastestInterval(1000);
 
-        slidingLayout = findViewById(R.id.sliding_layout);
-        slidingLayout.setPanelSlideListener(onSlideListener());
-    }
-
-    private SlidingUpPanelLayout.PanelSlideListener onSlideListener() {
-        return new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View view, float v) {
-
-            }
-
-            @Override
-            public void onPanelCollapsed(View view) {
-
-            }
-
-            @Override
-            public void onPanelExpanded(View view) {
-                String baseUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/01/words.txt";
-                new DownloadLyrics().execute(baseUrl);
-            }
-
-            @Override
-            public void onPanelAnchored(View view) {
-
-            }
-
-            @Override
-            public void onPanelHidden(View view) {
-
-            }
-        };
+        gameManager = new Game(this);
     }
 
     @Override
@@ -133,7 +97,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         switch (requestCode) {
             case PERMISSION_LOCATION_REQUEST_CODE: {
                 Log.i(TAG,"Permission granted, getting location");
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (!checkPermission(this)) {

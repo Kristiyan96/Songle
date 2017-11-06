@@ -29,11 +29,13 @@ public class LyricsParser {
     }
 
     private Lyrics readText(InputStream in){
+        String line;
         List<String[]> lyrics = new ArrayList<String[]>();
         java.util.Scanner s = new java.util.Scanner(in).useDelimiter("\\A");
 
         while(s.hasNext()){
-            lyrics.add(s.nextLine().split("\\s+"));
+            line = s.nextLine().trim().replaceAll("\\s+", " ");
+            lyrics.add(line.split(" "));
         }
 
         return new Lyrics(lyrics);

@@ -1,6 +1,5 @@
 package com.moonhythe.songle.Parser;
 
-import android.util.Log;
 import android.util.Xml;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -36,8 +35,8 @@ public class PlacemarkerParser {
         }
     }
 
-    private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List placemarks = new ArrayList();
+    private List<Placemark> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<Placemark> placemarks = new ArrayList<Placemark>();
 
         parser.require(XmlPullParser.START_TAG, ns, "Document");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -80,9 +79,6 @@ public class PlacemarkerParser {
                     break;
             }
         }
-        Log.i(TAG, placemark.getName());
-        Log.i(TAG, placemark.getDescription());
-
         return placemark;
     }
 

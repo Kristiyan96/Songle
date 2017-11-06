@@ -1,9 +1,12 @@
 package com.moonhythe.songle.Downloader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.moonhythe.songle.Parser.SongParser;
+import com.moonhythe.songle.Structure.Game;
+import com.moonhythe.songle.Structure.Preference;
 import com.moonhythe.songle.Structure.Song;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -21,6 +24,13 @@ import java.net.URL;
 public class DownloadSong extends AsyncTask<String, Void, Song> {
 
     private static final String TAG = DownloadSong.class.getSimpleName();
+    private Context context;
+    Game gameManager;
+
+    public DownloadSong(Context context, Game manager) {
+        this.context = context;
+        this.gameManager = manager;
+    }
 
     @Override
     protected Song doInBackground(String... urls) {
@@ -38,7 +48,7 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
 
     private Song loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        SongParser xmlParser = new SongParser();
+        SongParser xmlParser = new SongParser(context);
         Song result = null;
 
         try {
@@ -59,13 +69,18 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
         conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
-        // Starts the query
         conn.connect();
         return conn.getInputStream();
     }
 
     @Override
     protected void onPostExecute(Song song) {
-
+        // song is a randomly chosen song from the ones that have not been guessed
+        // Now we have to download the lyrics and markers
+        String song_number = song.getNumber();
+        //Save the song as last played
+        Preference.setSharedPreferenceString(context, "last_played", song_number);
+        //Alert Game that the song is downloaded
+        gameManager.onSongDownloaded(song);
     }
 }

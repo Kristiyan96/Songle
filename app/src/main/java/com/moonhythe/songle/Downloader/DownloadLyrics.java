@@ -1,9 +1,11 @@
 package com.moonhythe.songle.Downloader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.moonhythe.songle.Parser.LyricsParser;
+import com.moonhythe.songle.Structure.Game;
 import com.moonhythe.songle.Structure.Lyrics;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,10 +22,16 @@ import java.net.URL;
 public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
 
     private static final String TAG = DownloadLyrics.class.getSimpleName();
+    private Context context;
+    Game gameManager;
+
+    public DownloadLyrics(Context context, Game manager) {
+        this.context = context;
+        this.gameManager = manager;
+    }
 
     @Override
     protected Lyrics doInBackground(String... urls) {
-        Log.i(TAG, "Started doInBackground");
         Lyrics fail = null;
         try {
             return loadTxtFromNetwork(urls[0]);
@@ -61,5 +69,11 @@ public class DownloadLyrics extends AsyncTask<String, Void, Lyrics> {
         conn.setDoInput(true);
         conn.connect();
         return conn.getInputStream();
+    }
+
+    @Override
+    protected void onPostExecute(Lyrics lyrics) {
+        //Alert Game that the lyrics are downloaded
+        gameManager.onLyricsDownloaded(lyrics);
     }
 }

@@ -1,9 +1,12 @@
 package com.moonhythe.songle.Downloader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.moonhythe.songle.Parser.PlacemarkerParser;
+import com.moonhythe.songle.Structure.Game;
+import com.moonhythe.songle.Structure.Lyrics;
 import com.moonhythe.songle.Structure.Placemark;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -22,9 +25,22 @@ import java.util.List;
 public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
 
     private static final String TAG = DownloadMap.class.getSimpleName();
+    private Context context;
+    Game gameManager;
+    int combo;
+    Lyrics lyrics;
+
+    public DownloadMap(Context context, Game manager, int combo) {
+        Log.i(TAG, "Constructor for downloading for combo " + combo);
+        this.context = context;
+        this.gameManager = manager;
+        this.combo = combo;
+        this.lyrics = gameManager.getLyrics();
+    }
 
     @Override
     protected List<Placemark> doInBackground(String... urls){
+        Log.i(TAG, "Starting background job");
         List<Placemark> fail = null;
         try {
             return loadXmlFromNetwork(urls[0]);
@@ -40,15 +56,15 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
     private List<Placemark> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
         PlacemarkerParser xmlParser = new PlacemarkerParser();
-        List<Placemark>  result = new ArrayList<>();
+        List<Placemark> result = new ArrayList<>();
 
         try {
             stream = downloadUrl(urlString);
             result =  xmlParser.parse(stream);
         } finally {
-            if (stream != null) {
-                stream.close();
-            }
+            try {stream.close();}
+            catch (IOException e) {}
+            catch (Exception e) {}
         }
         return result;
     }
@@ -60,13 +76,25 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
         conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
-        // Starts the query
         conn.connect();
-        Log.i(TAG, "Markers downloaded");
         return conn.getInputStream();
     }
 
     @Override
     protected void onPostExecute(List<Placemark> placemarks) {
+        //Attach words to plcemarks
+        if(placemarks == null){
+            Log.i(TAG, "Placemark are null");
+        } else {
+            int row;
+            int column;
+            for(Placemark placemark : placemarks){
+                row = Integer.parseInt(placemark.getName().split(":")[0]) - 1;
+                column = Integer.parseInt(placemark.getName().split(":")[1]);
+                placemark.setWord(lyrics.getLyrics().get(row)[column]);
+            }
+        }
+        // Send back the placemarks
+        gameManager.onComboSetup(combo, placemarks);
     }
 }
