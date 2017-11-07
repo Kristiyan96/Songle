@@ -24,7 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.moonhythe.songle.R;
-import com.moonhythe.songle.Logic.GameInfo;
+import com.moonhythe.songle.GameManager.GameData;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -39,7 +39,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
-    GameInfo gameInfoManager;
+    GameData gameDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setInterval(3000)
                 .setFastestInterval(1000);
 
-        gameInfoManager = new GameInfo(this);
+        gameDataManager = new GameData(this);
     }
 
     @Override

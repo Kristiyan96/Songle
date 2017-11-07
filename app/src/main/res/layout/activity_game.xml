@@ -39,6 +39,19 @@
                 android:textColor="@color/primary_dark"
                 android:gravity="left"
                 android:padding="10dp"
+                android:id="@+id/total_time_text"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:text="00:00"
+                android:textSize="20dp"
+                android:textColor="@color/primary_dark"
+                android:gravity="left"
+                android:padding="10dp"
+                android:layout_marginStart="55dp"
                 android:id="@+id/total_time"
                 />
 
@@ -63,21 +76,34 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Hello"
+                    android:layout_height="50dp"
+                    android:text="Combo X1"
                     android:textSize="20dp"
+                    android:layout_weight="0.5"
+                    android:layout_marginLeft="10dp"
                     android:textColor="@color/accent"
-                    android:gravity="left"
                     android:padding="10dp"
                     android:id="@+id/combo"/>
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Collect 3 more in 2:00"
+                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:text="Collect 3 more in"
                     android:textColor="@color/accent"
-                    android:gravity="right"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="0dp"
+                    android:textSize="20dp"
+                    android:id="@+id/combo_quest"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="2:00"
+                    android:textColor="@color/accent"
                     android:padding="10dp"
-                    android:textSize="20dp"/>
+                    android:layout_marginEnd="10dp"
+                    android:textSize="20dp"
+                    android:id="@+id/combo_time"/>
 
             </LinearLayout>
 

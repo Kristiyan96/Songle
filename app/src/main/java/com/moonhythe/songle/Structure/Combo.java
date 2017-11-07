@@ -66,4 +66,20 @@ public class Combo {
     public void setCollected_words(int collected_words) {
         this.collected_words = collected_words;
     }
+
+    public int getGoal_collected_words() {
+        return goal_collected_words;
+    }
+
+    public int getSeconds_lasting() {
+        return seconds_lasting;
+    }
+
+    public List<Placemark> getPlacemarks() {
+        return placemarks;
+    }
+
+    public void setPlacemarks(List<Placemark> placemarks) {
+        this.placemarks = placemarks;
+    }
 }

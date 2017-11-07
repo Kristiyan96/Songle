@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.moonhythe.songle.GameManager.GameData;
 import com.moonhythe.songle.Parser.SongParser;
-import com.moonhythe.songle.Logic.GameInfo;
 import com.moonhythe.songle.Structure.Preference;
 import com.moonhythe.songle.Structure.Song;
 
@@ -25,11 +25,11 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
 
     private static final String TAG = DownloadSong.class.getSimpleName();
     private Context context;
-    GameInfo gameInfoManager;
+    GameData gameDataManager;
 
-    public DownloadSong(Context context, GameInfo manager) {
+    public DownloadSong(Context context, GameData manager) {
         this.context = context;
-        this.gameInfoManager = manager;
+        this.gameDataManager = manager;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class DownloadSong extends AsyncTask<String, Void, Song> {
         String song_number = song.getNumber();
         //Save the song as last played
         Preference.setSharedPreferenceString(context, "last_played", song_number);
-        //Alert GameInfo that the song is downloaded
-        gameInfoManager.onSongDownloaded(song);
+        //Alert GameData that the song is downloaded
+        gameDataManager.onSongDownloaded(song);
     }
 }

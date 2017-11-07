@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.moonhythe.songle.GameManager.GameData;
 import com.moonhythe.songle.Parser.PlacemarkerParser;
-import com.moonhythe.songle.Logic.GameInfo;
 import com.moonhythe.songle.Structure.Lyrics;
 import com.moonhythe.songle.Structure.Placemark;
 
@@ -26,16 +26,16 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
 
     private static final String TAG = DownloadMap.class.getSimpleName();
     private Context context;
-    GameInfo gameInfoManager;
+    GameData gameDataManager;
     int combo;
     Lyrics lyrics;
 
-    public DownloadMap(Context context, GameInfo manager, int combo) {
+    public DownloadMap(Context context, GameData manager, int combo) {
         Log.i(TAG, "Constructor for downloading for combo " + combo);
         this.context = context;
-        this.gameInfoManager = manager;
+        this.gameDataManager = manager;
         this.combo = combo;
-        this.lyrics = gameInfoManager.getLyrics();
+        this.lyrics = gameDataManager.getLyrics();
     }
 
     @Override
@@ -95,6 +95,6 @@ public class DownloadMap extends AsyncTask<String, Void, List<Placemark>> {
             }
         }
         // Send back the placemarks
-        gameInfoManager.onComboSetup(combo, placemarks);
+        gameDataManager.onComboSetup(combo, placemarks);
     }
 }

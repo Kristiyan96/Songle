@@ -1,14 +1,12 @@
-package com.moonhythe.songle.Logic;
+package com.moonhythe.songle.GameManager;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
 import com.moonhythe.songle.Downloader.DownloadSong;
-import com.moonhythe.songle.R;
 import com.moonhythe.songle.Structure.Combo;
 import com.moonhythe.songle.Structure.Lyrics;
 import com.moonhythe.songle.Structure.Placemark;
@@ -21,17 +19,23 @@ import java.util.List;
  * Created by kris on 05/11/17.
  */
 
-public class GameInfo extends Activity {
+public class GameData extends Activity {
 
-    private static final String TAG = GameInfo.class.getSimpleName();
+    private static final String TAG = GameData.class.getSimpleName();
     Context context = null;
 
-    Song song;
-    Lyrics lyrics;
-    Combo combo_1, combo_2, combo_3, combo_4, combo_5;
+    private int combos_downloaded=0;
 
-    public GameInfo(Context context) {
-        Log.i(TAG, "GameInfo created");
+    private Song song;
+    private Lyrics lyrics;
+    private Combo combo_1, combo_2, combo_3, combo_4, combo_5;
+    private GameLogic game;
+
+    private int total_time_seconds = 0;
+    private int combo_time_seconds = 0;
+
+    public GameData(Context context) {
+        Log.i(TAG, "GameData created");
         this.context = context;
         setupGame(0);
     }
@@ -49,7 +53,7 @@ public class GameInfo extends Activity {
                 setupCombo();
                 break;
             case 3:
-                startGame();
+                game = new GameLogic(context, this);
         }
     }
 
@@ -112,12 +116,14 @@ public class GameInfo extends Activity {
                 combo_5 = new Combo(5, placemarks);
                 break;
         }
-        setupGame(3);
+        waitForAllCombos();
     }
 
-    public void startGame(){
-        TextView txtView = (TextView) ((Activity)context).findViewById(R.id.combo);
-        txtView.setText("1");
+    public void waitForAllCombos(){
+        combos_downloaded++;
+        if(combos_downloaded==5){
+            setupGame(3);
+        }
     }
 
     public Lyrics getLyrics() {
@@ -140,4 +146,36 @@ public class GameInfo extends Activity {
                 return combo_1;
         }
     }
+
+    public int getTotal_time_seconds() {
+        return total_time_seconds;
+    }
+
+    public void setTotal_time_seconds(int total_time_seconds) {
+        this.total_time_seconds = total_time_seconds;
+    }
+
+    public int getCombo_time_seconds() {
+        return combo_time_seconds;
+    }
+
+    public void setCombo_time_seconds(int combo_time_seconds) {
+        this.combo_time_seconds = combo_time_seconds;
+    }
+
+    //    public long getGame_start_time() {
+//        return game_start_time;
+//    }
+//
+//    public void setGame_start_time(long game_start_time) {
+//        this.game_start_time = game_start_time;
+//    }
+//
+//    public long getCombo_start_time() {
+//        return combo_start_time;
+//    }
+//
+//    public void setCombo_start_time(long combo_start_time) {
+//        this.combo_start_time = combo_start_time;
+//    }
 }
