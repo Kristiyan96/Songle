@@ -60,24 +60,10 @@ public class GameLogic {
         setComboText();
         // - A new counter starts
         data.setCombo_time_seconds(current_combo.getSeconds_lasting());
-        startTotalTimer();
-        startComboTimer();
-        // - The goal sentence changes
-        setComboQuestText();
-        switch (current_combo.getCombo()) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            default:
-                break;
-        }
+        startTimers();
+
+        // All other changes
+        onCurrentComboChange();
     }
 
     public void onCurrentComboChange(){
@@ -85,6 +71,8 @@ public class GameLogic {
         // - Reprint the goal
         // - Add collected placemarks to the GameData
 
+        // - The goal sentence changes
+        setComboQuestText();
     }
 
     public void setCurrentComboMarkers(){
@@ -93,20 +81,10 @@ public class GameLogic {
         // TODO: Place markers on map
     }
 
-    public void setTotal_time_text(String time) {
-        total_time_text.setText(time);
-    }
 
-    public void setComboText(){
-        combo_text.setText("Combo X" + current_combo.getCombo());
-    }
-
-    public void setComboQuestText(){
-        combo_quest_text.setText("Collect " + (current_combo.getGoal_collected_words() - current_combo.getCollected_words()) + " more in");
-    }
-    public void setCombo_time_text(String time){
-        combo_time_text.setText(time);
-    }
+    /**
+     *  TIMERS
+     */
 
     public void startTimers(){
         startTotalTimer();
@@ -162,9 +140,23 @@ public class GameLogic {
         combo_time_h.removeCallbacks(runnable); //stop handler when activity not visible
     }
 
-    protected void onResume() {
+    /**
+     *  SETTERS AND GETTERS
+     */
 
+    public void setComboText(){
+        combo_text.setText("Combo X" + current_combo.getCombo());
+    }
 
+    public void setComboQuestText(){
+        combo_quest_text.setText("Collect " + (current_combo.getGoal_collected_words() - current_combo.getCollected_words()) + " more in");
+    }
 
+    public void setTotal_time_text(String time) {
+        total_time_text.setText(time);
+    }
+
+    public void setCombo_time_text(String time){
+        combo_time_text.setText(time);
     }
 }

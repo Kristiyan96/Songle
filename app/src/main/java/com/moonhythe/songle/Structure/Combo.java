@@ -55,10 +55,6 @@ public class Combo {
         return combo;
     }
 
-    public void setCombo(int combo) {
-        this.combo = combo;
-    }
-
     public int getCollected_words() {
         return collected_words;
     }
