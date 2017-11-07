@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.moonhythe.songle.Structure.Combo;
 import com.moonhythe.songle.Structure.Placemark;
 
@@ -23,19 +25,20 @@ public class GameLogic {
 
     private static final String TAG = GameLogic.class.getSimpleName();
 
-    Combo current_combo;
-    Context context;
-    GameData data;
-    TextView combo_text, total_time_text, combo_quest_text, combo_time_text;
-    List<Placemark> placemarkers;
+    private Combo current_combo;
+    private Context context;
+    private GameData data;
+    private TextView combo_text, total_time_text, combo_quest_text, combo_time_text;
+    private List<Placemark> placemarks;
+    private GoogleMap mMap;
 
     // Timer
-    Handler total_time_h = new Handler();
-    Handler combo_time_h = new Handler();
-    int delay = 1000; //every second
-    Runnable runnable;
-    int seconds = 0;
-    int minutes = 0;
+    private Handler total_time_h = new Handler();
+    private Handler combo_time_h = new Handler();
+    private int delay = 1000; //every second
+    private Runnable runnable;
+    private int seconds = 0;
+    private int minutes = 0;
 
     // Game logic constructor
     // Setting all needed default variables
@@ -48,6 +51,7 @@ public class GameLogic {
         total_time_text = (TextView) ((Activity)context).findViewById(total_time);
         combo_quest_text = (TextView) ((Activity)context).findViewById(combo_quest);
         combo_time_text = (TextView) ((Activity)context).findViewById(combo_time);
+        mMap = data.getMap();
         setupNewCombo();
     }
 
@@ -76,9 +80,20 @@ public class GameLogic {
     }
 
     public void setCurrentComboMarkers(){
-        placemarkers = data.getCombo(current_combo.getCombo()).getPlacemarks();
+        placemarks = data.getCombo(current_combo.getCombo()).getPlacemarks();
+        // TODO: Remove placemarks that have been collected
 
-        // TODO: Place markers on map
+        putPlacemarksOnMap(placemarks);
+    }
+
+    /**
+     *  PLACEMARKS
+     */
+
+    public void putPlacemarksOnMap(List<Placemark> placemarks_not_collected){
+        for(Placemark placemark : placemarks_not_collected){
+            mMap.addMarker(new MarkerOptions().position(placemark.getPoint()).title(placemark.getWord()));
+        }
     }
 
 

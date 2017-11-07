@@ -61,8 +61,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(3000)
                 .setFastestInterval(1000);
-
-        gameDataManager = new GameData(this);
     }
 
     @Override
@@ -71,6 +69,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMaxZoomPreference(19);
         mMap.setMinZoomPreference(16);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
+        gameDataManager = new GameData(this, mMap);
     }
 
     @Override
@@ -169,5 +168,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(GameActivity.this, "Connection failed. Please enable internet.",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    public GoogleMap getMap(){
+        return mMap;
     }
 }

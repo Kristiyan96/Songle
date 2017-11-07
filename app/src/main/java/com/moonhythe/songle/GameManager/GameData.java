@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
 import com.moonhythe.songle.Downloader.DownloadSong;
@@ -30,13 +31,15 @@ public class GameData extends Activity {
     private Lyrics lyrics;
     private Combo combo_1, combo_2, combo_3, combo_4, combo_5;
     private GameLogic game;
+    private GoogleMap mMap;
 
     private int total_time_seconds = 0;
     private int combo_time_seconds = 0;
 
-    public GameData(Context context) {
+    public GameData(Context context, GoogleMap mMap) {
         Log.i(TAG, "GameData created");
         this.context = context;
+        this.mMap = mMap;
         setupGame(0);
     }
 
@@ -161,6 +164,10 @@ public class GameData extends Activity {
 
     public void setCombo_time_seconds(int combo_time_seconds) {
         this.combo_time_seconds = combo_time_seconds;
+    }
+
+    public GoogleMap getMap(){
+        return mMap;
     }
 
     //    public long getGame_start_time() {
