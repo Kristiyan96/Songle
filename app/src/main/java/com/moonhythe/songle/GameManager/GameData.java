@@ -2,6 +2,7 @@ package com.moonhythe.songle.GameManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -14,6 +15,7 @@ import com.moonhythe.songle.Structure.Placemark;
 import com.moonhythe.songle.Structure.Preference;
 import com.moonhythe.songle.Structure.Song;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,9 +31,10 @@ public class GameData extends Activity {
 
     private Song song;
     private Lyrics lyrics;
-    private Combo combo_1, combo_2, combo_3, combo_4, combo_5;
+    private Combo combo_1, combo_2, combo_3, combo_4, combo_5, current_combo;
     private GameLogic game;
     private GoogleMap mMap;
+    private List<Placemark> picked_placemarks = new ArrayList<Placemark>();
 
     private int total_time_seconds = 0;
     private int combo_time_seconds = 0;
@@ -56,6 +59,7 @@ public class GameData extends Activity {
                 setupCombo();
                 break;
             case 3:
+                current_combo = getCombo(4);
                 game = new GameLogic(context, this);
         }
     }
@@ -168,6 +172,65 @@ public class GameData extends Activity {
 
     public GoogleMap getMap(){
         return mMap;
+    }
+
+    public void updateLocation(Location location){
+        if(game != null) game.onLocationChanged(location);
+    }
+
+    public List<Placemark> getUnpickedPlacemarks(){
+        List<Placemark> unpicked_placemarks = new ArrayList<Placemark>();
+
+        if (picked_placemarks != null && current_combo.getPlacemarks() != null){
+            Boolean found = false;
+            for(Placemark placemark_i : current_combo.getPlacemarks()){
+                for(Placemark placemark_k : picked_placemarks){
+                    if(placemark_i.getName() == placemark_k.getName()) found = true;
+                }
+                if(!found) unpicked_placemarks.add(placemark_i);
+                found = false;
+            }
+            return unpicked_placemarks;
+        } else{
+            return current_combo.getPlacemarks();
+        }
+    }
+
+    public void addPickedPlacemark(Placemark placemark){
+        picked_placemarks.add(placemark);
+    }
+
+    public Combo getCurrent_combo(){
+        return current_combo;
+    }
+
+    public String getLyricsText(){
+        String lyrics_text = "";
+        List<String[]> lyrics_lines = lyrics.getLyrics();
+        for(int i=0;i<lyrics_lines.size();i++){
+            for(int k=1;k<lyrics_lines.get(i).length;k++){
+                if(isWordOpened(i+1,k)) lyrics_text+=lyrics_lines.get(i)[k]+" ";
+                else lyrics_text+= "....." + " ";
+            }
+            lyrics_text+="\n";
+        }
+
+        return lyrics_text;
+    }
+
+    public Boolean isWordOpened(int row, int column){
+        String[] name;
+        int num1, num2;
+        if(picked_placemarks.size()==0) return false;
+        else{
+            for(Placemark placemark : picked_placemarks){
+                name = placemark.getName().split(":");
+                num1 = Integer.parseInt(name[0]);
+                num2 = Integer.parseInt(name[1]);
+                if(num1 == row && num2 == column) return true;
+            }
+        }
+        return false;
     }
 
     //    public long getGame_start_time() {

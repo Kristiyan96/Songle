@@ -71,6 +71,10 @@ public class Combo {
         return seconds_lasting;
     }
 
+    public void setSeconds_lasting(int seconds_lasting) {
+        this.seconds_lasting = seconds_lasting;
+    }
+
     public List<Placemark> getPlacemarks() {
         return placemarks;
     }

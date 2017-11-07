@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -21,6 +22,7 @@ public class Placemark {
     private String description = null;
     private String styleUrl = null;
     private LatLng point = null;
+    private Marker marker;
 
     public Placemark() {
     }
@@ -28,19 +30,19 @@ public class Placemark {
     public void putOnMap(Context context, GoogleMap mMap){
         switch(description){
             case "unclassified":
-                mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("unclassified",100,100, context))));
+                marker = mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("unclassified",100,100, context))));
                 break;
             case "boring":
-                mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("boring",100,100, context))));
+                marker = mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("boring",100,100, context))));
                 break;
             case "notboring":
-                mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("not_boring",100,100, context))));
+                marker = mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("not_boring",100,100, context))));
                 break;
             case "interesting":
-                mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("interesting",100,100, context))));
+                marker = mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("interesting",100,100, context))));
                 break;
             case "veryinteresting":
-                mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("very_interesting",100,100, context))));
+                marker = mMap.addMarker(new MarkerOptions().position(point).title(description).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("very_interesting",100,100, context))));
                 break;
         }
     }
@@ -51,6 +53,9 @@ public class Placemark {
         return resizedBitmap;
     }
 
+    public void deleteMarker(){
+        marker.remove();
+    }
 
     public String getName() {
         return name;

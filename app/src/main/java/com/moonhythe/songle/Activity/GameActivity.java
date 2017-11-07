@@ -120,6 +120,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = location.getLongitude();
             LatLng latlng = new LatLng(lat, lng);
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+            gameDataManager.updateLocation(location);
         }
         else {
             Log.i(TAG,"No permission to handle location.");

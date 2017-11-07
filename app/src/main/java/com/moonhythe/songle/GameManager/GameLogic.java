@@ -2,11 +2,11 @@ package com.moonhythe.songle.GameManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.os.Handler;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.moonhythe.songle.Structure.Combo;
 import com.moonhythe.songle.Structure.Placemark;
 
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.List;
 import static com.moonhythe.songle.R.id.combo;
 import static com.moonhythe.songle.R.id.combo_quest;
 import static com.moonhythe.songle.R.id.combo_time;
+import static com.moonhythe.songle.R.id.print_lyrics;
 import static com.moonhythe.songle.R.id.total_time;
 
 /**
@@ -24,10 +25,9 @@ public class GameLogic {
 
     private static final String TAG = GameLogic.class.getSimpleName();
 
-    private Combo current_combo;
     private Context context;
     private GameData data;
-    private TextView combo_text, total_time_text, combo_quest_text, combo_time_text;
+    private TextView combo_text, total_time_text, combo_quest_text, combo_time_text, lyrics_text;
     private List<Placemark> placemarks;
     private GoogleMap mMap;
 
@@ -44,12 +44,12 @@ public class GameLogic {
     public GameLogic(Context context, GameData data) {
         this.context = context;
         this.data = data;
-        this.current_combo = data.getCombo(4);
 
         combo_text = (TextView) ((Activity)context).findViewById(combo);
         total_time_text = (TextView) ((Activity)context).findViewById(total_time);
         combo_quest_text = (TextView) ((Activity)context).findViewById(combo_quest);
         combo_time_text = (TextView) ((Activity)context).findViewById(combo_time);
+        lyrics_text = (TextView) ((Activity)context).findViewById(print_lyrics);
         mMap = data.getMap();
         setupNewCombo();
     }
@@ -62,7 +62,7 @@ public class GameLogic {
         // - The current combo text field changes
         setComboText();
         // - A new counter starts
-        data.setCombo_time_seconds(current_combo.getSeconds_lasting());
+//        data.setCombo_time_seconds(data.getCurrent_combo().getSeconds_lasting());
         startTimers();
 
         // All other changes
@@ -73,24 +73,36 @@ public class GameLogic {
         // When the current combo changes
         // - Reprint the goal
         // - Add collected placemarks to the GameData
-
+        // - Reprint the lyrics
+        setLyrics_text(data.getLyricsText());
+//        Log.i(TAG, data.getLyricsText());
         // - The goal sentence changes
         setComboQuestText();
-    }
-
-    public void setCurrentComboMarkers(){
-        placemarks = data.getCombo(current_combo.getCombo()).getPlacemarks();
-        // TODO: Remove placemarks that have been collected
-
-        putPlacemarksOnMap(placemarks);
     }
 
     /**
      *  PLACEMARKS
      */
 
-    public void putPlacemarksOnMap(List<Placemark> placemarks_not_collected){
-        for(Placemark placemark : placemarks_not_collected){
+    public void onLocationChanged(Location location){
+        Boolean change = false;
+        placemarks = data.getUnpickedPlacemarks();
+        Location target = new Location("target");
+        for(Placemark placemark : placemarks){
+            target.setLatitude(placemark.getPoint().latitude);
+            target.setLongitude(placemark.getPoint().longitude);
+            if(location.distanceTo(target)<50){
+                change = true;
+                data.addPickedPlacemark(placemark);
+                placemark.deleteMarker();
+            }
+        }
+        if(change) onCurrentComboChange();
+    }
+
+    public void setCurrentComboMarkers(){
+        placemarks = data.getUnpickedPlacemarks();
+        for(Placemark placemark : placemarks){
             placemark.putOnMap(context, mMap);
         }
     }
@@ -137,8 +149,8 @@ public class GameLogic {
         combo_time_h.postDelayed(new Runnable() {
             public void run() {
                 //Increments seconds by 1 every second
-                seconds = data.getCombo_time_seconds()-1;
-                data.setCombo_time_seconds(seconds);
+                seconds = data.getCurrent_combo().getSeconds_lasting() - 1;
+                data.getCurrent_combo().setSeconds_lasting(seconds);
 
                 minutes = (int) seconds / 60;
                 seconds %= 60;
@@ -159,11 +171,11 @@ public class GameLogic {
      */
 
     public void setComboText(){
-        combo_text.setText("Combo X" + current_combo.getCombo());
+        combo_text.setText("Combo X" + data.getCurrent_combo().getCombo());
     }
 
     public void setComboQuestText(){
-        combo_quest_text.setText("Collect " + (current_combo.getGoal_collected_words() - current_combo.getCollected_words()) + " more in");
+        combo_quest_text.setText("Collect " + (data.getCurrent_combo().getGoal_collected_words() - data.getCurrent_combo().getCollected_words()) + " more in");
     }
 
     public void setTotal_time_text(String time) {
@@ -172,5 +184,9 @@ public class GameLogic {
 
     public void setCombo_time_text(String time){
         combo_time_text.setText(time);
+    }
+
+    public void setLyrics_text(String text){
+        lyrics_text.setText(text);
     }
 }

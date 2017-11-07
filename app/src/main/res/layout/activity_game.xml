@@ -109,7 +109,26 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    android:text="Lyrics"
+                    android:textAlignment="center"
+                    android:textSize="20dp"
+                    android:textColor="@color/accent"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/print_lyrics"
+                    android:text="heyy"
+                    android:textSize="20dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/accent"/>
             </LinearLayout>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
