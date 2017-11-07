@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.moonhythe.songle.Structure.Combo;
 import com.moonhythe.songle.Structure.Placemark;
 
@@ -45,7 +44,7 @@ public class GameLogic {
     public GameLogic(Context context, GameData data) {
         this.context = context;
         this.data = data;
-        this.current_combo = data.getCombo(1);
+        this.current_combo = data.getCombo(4);
 
         combo_text = (TextView) ((Activity)context).findViewById(combo);
         total_time_text = (TextView) ((Activity)context).findViewById(total_time);
@@ -92,7 +91,7 @@ public class GameLogic {
 
     public void putPlacemarksOnMap(List<Placemark> placemarks_not_collected){
         for(Placemark placemark : placemarks_not_collected){
-            mMap.addMarker(new MarkerOptions().position(placemark.getPoint()).title(placemark.getWord()));
+            placemark.putOnMap(context, mMap);
         }
     }
 
