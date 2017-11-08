@@ -12,7 +12,7 @@ import com.moonhythe.songle.R;
 
 public class MainActivity extends Activity {
 
-    ImageButton start_btn, instructions_btn, history_btn;
+    ImageButton start_btn, instructions_btn, history_btn, settings_btn;
 
     public void gotoGame(View v){
         Intent gotoGame = new Intent(this, GameActivity.class);
@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
         start_btn = (ImageButton) findViewById(R.id.start_btn);
         instructions_btn = (ImageButton) findViewById(R.id.instructions_btn);
         history_btn = (ImageButton) findViewById(R.id.history_btn);
+        settings_btn = (ImageButton) findViewById(R.id.settings_btn);
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
@@ -58,6 +59,11 @@ public class MainActivity extends Activity {
                 startActivity(myIntent);
             }
         });
-
+        settings_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent myIntent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(myIntent);
+            }
+        });
     }
 }
