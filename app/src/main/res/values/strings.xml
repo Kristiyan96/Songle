@@ -18,4 +18,5 @@
 
     <string name="PLAYED_SONGS">PLAYED_SONGS</string>
     <string name="title_activity_win">WinActivity</string>
+    <string name="title_activity_surrender">SurrenderActivity</string>
 </resources>
