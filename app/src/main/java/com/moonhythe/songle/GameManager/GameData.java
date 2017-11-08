@@ -233,6 +233,14 @@ public class GameData extends Activity {
         return false;
     }
 
+    public void guessSong(String song_title){
+        if(song.getTitle()==song_title){
+            // Jumo to congratulations screen
+        }else{
+            // Print message that this is not the song
+        }
+    }
+
     //    public long getGame_start_time() {
 //        return game_start_time;
 //    }

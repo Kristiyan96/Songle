@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,8 +26,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.moonhythe.songle.R;
 import com.moonhythe.songle.GameManager.GameData;
+import com.moonhythe.songle.R;
+
+import static com.moonhythe.songle.R.id.guess_song_submit;
+import static com.moonhythe.songle.R.id.guess_song_text;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -40,6 +46,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
     GameData gameDataManager;
+
+    Button guess_song;
+    EditText guessed_song;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +79,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMinZoomPreference(16);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         gameDataManager = new GameData(this, mMap);
+
+        // Guess a song
+        guessed_song = (EditText) findViewById(guess_song_text);
+        guess_song = (Button) findViewById(guess_song_submit);
+
+        guess_song.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                String song = guessed_song.getText().toString();
+                gameDataManager.guessSong(song);
+            }
+        });
     }
 
     @Override

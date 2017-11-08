@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.moonhythe.songle.Activity.GameActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.moonhythe.songle.Activity.GameActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
@@ -31,29 +30,27 @@
             tools:layout="@layout/activity_game">
 
             <TextView
+                android:id="@+id/total_time_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:text="Time:"
-                android:textSize="20dp"
-                android:textColor="@color/primary_dark"
                 android:gravity="left"
+                android:orientation="horizontal"
                 android:padding="10dp"
-                android:id="@+id/total_time_text"
-                />
+                android:text="Time:"
+                android:textColor="@color/primary_dark"
+                android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/total_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:text="00:00"
-                android:textSize="20dp"
-                android:textColor="@color/primary_dark"
-                android:gravity="left"
-                android:padding="10dp"
                 android:layout_marginStart="55dp"
-                android:id="@+id/total_time"
-                />
+                android:gravity="left"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:text="00:00"
+                android:textColor="@color/primary_dark"
+                android:textSize="20dp" />
 
 
         </fragment>
@@ -71,68 +68,109 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/primary_dark">
+                android:background="@color/primary_dark"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/combo"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
-                    android:text="Combo X1"
-                    android:textSize="20dp"
-                    android:layout_weight="0.5"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/accent"
+                    android:layout_weight="0.5"
                     android:padding="10dp"
-                    android:id="@+id/combo"/>
-                <TextView
-                    android:layout_height="50dp"
-                    android:layout_width="wrap_content"
-                    android:text="Collect 3 more in"
+                    android:text="Combo X1"
                     android:textColor="@color/accent"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/combo_quest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
                     android:paddingBottom="10dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
                     android:paddingRight="0dp"
-                    android:textSize="20dp"
-                    android:id="@+id/combo_quest"/>
+                    android:paddingTop="10dp"
+                    android:text="Collect 3 more in"
+                    android:textColor="@color/accent"
+                    android:textSize="20dp" />
+
                 <TextView
+                    android:id="@+id/combo_time"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
                     android:text="2:00"
                     android:textColor="@color/accent"
-                    android:padding="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:textSize="20dp"
-                    android:id="@+id/combo_time"/>
+                    android:textSize="20dp" />
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="80dp"
-                    android:text="Lyrics"
-                    android:textAlignment="center"
-                    android:textSize="20dp"
-                    android:textColor="@color/accent"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:id="@+id/print_lyrics"
-                    android:text="heyy"
-                    android:textSize="20dp"
-                    android:textAlignment="center"
-                    android:textColor="@color/accent"/>
-            </LinearLayout>
+                    android:orientation="vertical">
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <EditText
+                            android:id="@+id/guess_song_text"
+                            android:layout_width="fill_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/rounded_edittext"
+                            android:hint="Song title"
+                            android:padding="10dp"
+                            android:textColorHint="@color/primary_light"></EditText>
+
+                        <Button
+                            android:id="@+id/guess_song_submit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="43dp"
+                            android:layout_marginLeft="5dp"
+                            android:background="@color/primary_dark"
+                            android:padding="10dp"
+                            android:text="Guess"
+                            android:textColor="@color/primary_light"></Button>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="80dp"
+                        android:text="Lyrics"
+                        android:textAlignment="center"
+                        android:textColor="@color/accent"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/print_lyrics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="heyy"
+                        android:textAlignment="center"
+                        android:textColor="@color/accent"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+
+            </ScrollView>
+
         </LinearLayout>
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 </LinearLayout>
