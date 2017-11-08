@@ -7,11 +7,41 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.moonhythe.songle.Activity.WinActivity"
     tools:showIn="@layout/activity_win">
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="30dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:src="@drawable/play_youtube"
+                android:text="Play in YouTube"
+                android:background="white"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Open in YouTube"
+                android:textAlignment="center"
+                android:textColor="@color/primary_dark"/>
+            
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="white"
+                android:text="Back to Main Menu"
+                android:textAlignment="center"
+                android:textSize="17dp"
+                android:textColor="@color/primary_dark"/>
+            
+        </LinearLayout>
+        
+    </ScrollView>
 
 </android.support.v4.widget.NestedScrollView>
