@@ -2,10 +2,13 @@ package com.moonhythe.songle.GameManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.moonhythe.songle.Activity.GameActivity;
+import com.moonhythe.songle.Activity.WinActivity;
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
 import com.moonhythe.songle.Downloader.DownloadSong;
@@ -25,7 +28,7 @@ import java.util.List;
 public class GameData extends Activity {
 
     private static final String TAG = GameData.class.getSimpleName();
-    Context context = null;
+    private static Context context = null;
 
     private int combos_downloaded=0;
 
@@ -210,7 +213,9 @@ public class GameData extends Activity {
     public void guessSong(String song_title){
         if(closeEnough(song.getTitle(),song_title)){
             // Jump to congratulations screen
-            game.showMessage("Correct", "Congratulations!");
+            Intent intent = new Intent();
+            intent.setClass((GameActivity)context, WinActivity.class);
+            context.startActivity(intent);
         }else{
             game.showMessage("Wrong", "That's not the song title, Try again.");
         }
