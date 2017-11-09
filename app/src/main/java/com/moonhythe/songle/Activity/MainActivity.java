@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
         });
         settings_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(MainActivity.this, HistoryActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, SurrenderActivity.class);
                 startActivity(myIntent);
             }
         });

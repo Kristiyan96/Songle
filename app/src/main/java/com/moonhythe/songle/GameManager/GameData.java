@@ -37,7 +37,6 @@ public class GameData extends Activity {
     private List<Placemark> picked_placemarks = new ArrayList<Placemark>();
 
     private int total_time_seconds = 0;
-    private int combo_time_seconds = 0;
 
     public GameData(Context context, GoogleMap mMap) {
         Log.i(TAG, "GameData created");
@@ -59,8 +58,8 @@ public class GameData extends Activity {
                 setupCombo();
                 break;
             case 3:
-                current_combo = getCombo(4);
-                game = new GameLogic(context, this);
+                current_combo = getCombo(1);
+                game = new GameLogic(context, this, mMap);
         }
     }
 
@@ -98,29 +97,24 @@ public class GameData extends Activity {
             stringUrl+= (i + ".kml");
             new DownloadMap(context, this, i).execute(stringUrl);
         }
-        Log.i(TAG, "Exiting iteration");
-
     }
 
     public void onComboSetup(int which_combo, List<Placemark> placemarks){
-        if(placemarks == null) {
-            Log.i(TAG, "No placemarks received.");
-        }
         switch (which_combo){
             case 1:
-                combo_1 = new Combo(1, placemarks);
+                combo_1 = new Combo(1, placemarks, this, game);
                 break;
             case 2:
-                combo_2 = new Combo(2, placemarks);
+                combo_2 = new Combo(2, placemarks, this, game);
                 break;
             case 3:
-                combo_3 = new Combo(3, placemarks);
+                combo_3 = new Combo(3, placemarks, this, game);
                 break;
             case 4:
-                combo_4 = new Combo(4, placemarks);
+                combo_4 = new Combo(4, placemarks, this, game);
                 break;
             case 5:
-                combo_5 = new Combo(5, placemarks);
+                combo_5 = new Combo(5, placemarks, this, game);
                 break;
         }
         waitForAllCombos();
@@ -131,47 +125,6 @@ public class GameData extends Activity {
         if(combos_downloaded==5){
             setupGame(3);
         }
-    }
-
-    public Lyrics getLyrics() {
-        return lyrics;
-    }
-
-    public Combo getCombo(int comb) {
-        switch(comb){
-            case 1:
-                return combo_1;
-            case 2:
-                return combo_2;
-            case 3:
-                return combo_3;
-            case 4:
-                return combo_4;
-            case 5:
-                return combo_5;
-            default:
-                return combo_1;
-        }
-    }
-
-    public int getTotal_time_seconds() {
-        return total_time_seconds;
-    }
-
-    public void setTotal_time_seconds(int total_time_seconds) {
-        this.total_time_seconds = total_time_seconds;
-    }
-
-    public int getCombo_time_seconds() {
-        return combo_time_seconds;
-    }
-
-    public void setCombo_time_seconds(int combo_time_seconds) {
-        this.combo_time_seconds = combo_time_seconds;
-    }
-
-    public GoogleMap getMap(){
-        return mMap;
     }
 
     public void updateLocation(Location location){
@@ -198,10 +151,31 @@ public class GameData extends Activity {
 
     public void addPickedPlacemark(Placemark placemark){
         picked_placemarks.add(placemark);
+        current_combo.setCollected_words(current_combo.getCollected_words()+1);
     }
 
     public Combo getCurrent_combo(){
         return current_combo;
+    }
+
+    public void incrementCombo(){
+        Log.i(TAG, "Incrementing combo");
+        // Clear previous combo marks before adding the new one
+        current_combo.clearMap();
+        if(current_combo.getCombo()==5){
+            current_combo = getCombo(5);
+        }else{
+            current_combo = getCombo(current_combo.getCombo()+1);
+        }
+        Log.i(TAG, "Current combo updated");
+        game.setupNewCombo();
+        Log.i(TAG, "New combo setted up");
+    }
+    public void resetCombo(){
+        // Clear previous combo marks before adding the new one
+        current_combo.clearMap();
+        current_combo = getCombo(1);
+        game.setupNewCombo();
     }
 
     public String getLyricsText(){
@@ -235,25 +209,40 @@ public class GameData extends Activity {
 
     public void guessSong(String song_title){
         if(song.getTitle()==song_title){
-            // Jumo to congratulations screen
+            // Jump to congratulations screen
         }else{
-            // Print message that this is not the song
+            game.showMessage("Wrong", "That's not the song title, Try again.");
         }
     }
 
-    //    public long getGame_start_time() {
-//        return game_start_time;
-//    }
-//
-//    public void setGame_start_time(long game_start_time) {
-//        this.game_start_time = game_start_time;
-//    }
-//
-//    public long getCombo_start_time() {
-//        return combo_start_time;
-//    }
-//
-//    public void setCombo_start_time(long combo_start_time) {
-//        this.combo_start_time = combo_start_time;
-//    }
+    public Lyrics getLyrics() {
+        return lyrics;
+    }
+
+    public Combo getCombo(int comb) {
+        // send back a copy of the original saved combo
+        switch(comb){
+            case 1:
+                return new Combo(1, combo_1.getPlacemarks(), this, game);
+            case 2:
+                return new Combo(2, combo_2.getPlacemarks(), this, game);
+            case 3:
+                return new Combo(3, combo_3.getPlacemarks(), this, game);
+            case 4:
+                return new Combo(4, combo_4.getPlacemarks(), this, game);
+            case 5:
+                return new Combo(5, combo_5.getPlacemarks(), this, game);
+            default:
+                return new Combo(1, combo_1.getPlacemarks(), this, game);
+        }
+    }
+
+    public int getTotal_time_seconds() {
+        return total_time_seconds;
+    }
+
+    public void setTotal_time_seconds(int total_time_seconds) {
+        this.total_time_seconds = total_time_seconds;
+    }
+
 }

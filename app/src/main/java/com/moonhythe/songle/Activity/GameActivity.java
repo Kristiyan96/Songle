@@ -75,7 +75,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMaxZoomPreference(19);
+        mMap.setMaxZoomPreference(17);
         mMap.setMinZoomPreference(16);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         gameDataManager = new GameData(this, mMap);

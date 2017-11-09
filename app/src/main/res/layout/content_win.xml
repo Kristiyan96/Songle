@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.moonhythe.songle.Activity.WinActivity"
+    android:background="#fff"
     tools:showIn="@layout/activity_win">
     
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#fff">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,10 +22,10 @@
 
             <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="150dp"
                 android:src="@drawable/play_youtube"
                 android:text="Play in YouTube"
-                android:background="white"/>
+                android:background="#fff"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -34,7 +36,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="white"
+                android:background="#fff"
                 android:text="Back to Main Menu"
                 android:textAlignment="center"
                 android:textSize="17dp"
