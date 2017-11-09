@@ -163,6 +163,18 @@
                         android:textAlignment="center"
                         android:textColor="@color/accent"
                         android:textSize="20dp" />
+                    
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Surrender"
+                        android:background="@color/primary_dark"
+                        android:textColor="#fff"
+                        android:layout_gravity="center"
+                        android:padding="10dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
+                        android:id="@+id/surrender_btn"/>
                 </LinearLayout>
 
 

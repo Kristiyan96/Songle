@@ -2,6 +2,7 @@ package com.moonhythe.songle.Activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -31,6 +32,7 @@ import com.moonhythe.songle.R;
 
 import static com.moonhythe.songle.R.id.guess_song_submit;
 import static com.moonhythe.songle.R.id.guess_song_text;
+import static com.moonhythe.songle.R.id.surrender_btn;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -47,7 +49,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     public final int PERMISSION_LOCATION_REQUEST_CODE = 101;
     GameData gameDataManager;
 
-    Button guess_song;
+    Button guess_song, surrender;
     EditText guessed_song;
 
     @Override
@@ -88,6 +90,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View arg0) {
                 String song = guessed_song.getText().toString();
                 gameDataManager.guessSong(song);
+            }
+        });
+
+        // Surrender
+        surrender = (Button) findViewById(surrender_btn);
+
+        surrender.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent myIntent = new Intent(GameActivity.this, SurrenderActivity.class);
+                startActivity(myIntent);
             }
         });
     }
