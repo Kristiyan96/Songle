@@ -330,7 +330,7 @@ public class GameData extends Activity {
     public void importPickedPlacemarks(){
         for(String i : Preference.getSharedPreferenceString(context, "picked_placemarks", "").split(" ")){
             for(Placemark k : combo_5.getPlacemarks()){
-                if(k.getName()==i) picked_placemarks.add(k);
+                if(k.getName().equals(i)) picked_placemarks.add(k);
             }
         }
     }
@@ -340,6 +340,7 @@ public class GameData extends Activity {
         for(Placemark placemark : picked_placemarks){
             picked += placemark.getName() + " ";
         }
+        Log.i(TAG, picked);
         return picked;
     }
 }
