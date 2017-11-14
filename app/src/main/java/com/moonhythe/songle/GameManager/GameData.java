@@ -46,6 +46,7 @@ public class GameData extends Activity {
         this.context = context;
         this.continue_game = continue_game;
         this.mMap = mMap;
+        Preference.setSharedPreferenceBoolean(context, "can_continue", true);
         setupGame(0);
     }
 
@@ -215,6 +216,10 @@ public class GameData extends Activity {
     }
 
     public void surrender(){
+        // No continue game
+        Preference.setSharedPreferenceBoolean(context, "can_continue", false);
+
+        // Jump to SurrenderActivity
         Intent intent = new Intent();
         intent = putSongInfo(intent);
         intent.setClass(context, SurrenderActivity.class);
@@ -223,6 +228,8 @@ public class GameData extends Activity {
 
     public void guessSong(String song_title){
         if(closeEnough(song.getTitle(),song_title)){
+            // No continue game
+            Preference.setSharedPreferenceBoolean(context, "can_continue", false);
             // Jump to congratulations screen
             Intent intent = new Intent();
             intent = putSongInfo(intent);

@@ -9,21 +9,13 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.moonhythe.songle.R;
+import com.moonhythe.songle.Structure.Preference;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     ImageButton start_btn, instructions_btn, history_btn, settings_btn, continue_btn;
-
-    public void gotoGame(View v){
-        Intent gotoGame = new Intent(this, GameActivity.class);
-        startActivity(gotoGame);
-    }
-
-    public void gotoInstructions(View v){
-        Intent gotoInstructions = new Intent(this, InstructionsActivity.class);
-        startActivity(gotoInstructions);
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,5 +66,23 @@ public class MainActivity extends Activity {
                 startActivity(myIntent);
             }
         });
+
+        // Check if there's a game to continue
+        if(!Preference.getSharedPreferenceBoolean(this, "can_continue", false)){
+            continue_btn.setVisibility(View.GONE);
+        } else{
+            continue_btn.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Check if there's a game to continue
+        if(!Preference.getSharedPreferenceBoolean(this, "can_continue", false)){
+            continue_btn.setVisibility(View.GONE);
+        } else{
+            continue_btn.setVisibility(View.VISIBLE);
+        }
     }
 }
