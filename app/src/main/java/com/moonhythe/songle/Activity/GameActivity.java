@@ -52,6 +52,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     Button guess_song, surrender;
     EditText guessed_song;
 
+    Boolean continue_game = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(3000)
                 .setFastestInterval(1000);
+
+        // Check if continue game or a new game
+        if(getIntent().getExtras() != null){
+            continue_game = getIntent().getExtras().getBoolean("continue_game");
+        } else{
+            continue_game = false;
+        }
     }
 
     @Override
@@ -80,7 +89,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMaxZoomPreference(17);
         mMap.setMinZoomPreference(16);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
-        gameDataManager = new GameData(this, mMap);
+
+        gameDataManager = new GameData(this, mMap, continue_game);
 
         // Guess a song
         guessed_song = (EditText) findViewById(guess_song_text);
@@ -169,6 +179,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onPause() {
         super.onPause();
+        gameDataManager.saveGameState();
         Log.i(TAG, "Pause maps activity");
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

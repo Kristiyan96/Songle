@@ -28,9 +28,9 @@
         </activity>
 
         <meta-data
-            tools:node="replace"
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"
+            tools:node="replace" />
 
         <activity
             android:name=".Activity.GameActivity"
@@ -61,7 +61,15 @@
         <activity
             android:name=".Activity.SurrenderActivity"
             android:label="@string/title_activity_surrender"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".Activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moonhythe.songle.Activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ import com.moonhythe.songle.R;
 
 public class MainActivity extends Activity {
 
-    ImageButton start_btn, instructions_btn, history_btn, settings_btn;
+    ImageButton start_btn, instructions_btn, history_btn, settings_btn, continue_btn;
 
     public void gotoGame(View v){
         Intent gotoGame = new Intent(this, GameActivity.class);
@@ -40,10 +40,12 @@ public class MainActivity extends Activity {
         instructions_btn = (ImageButton) findViewById(R.id.instructions_btn);
         history_btn = (ImageButton) findViewById(R.id.history_btn);
         settings_btn = (ImageButton) findViewById(R.id.settings_btn);
+        continue_btn = (ImageButton) findViewById(R.id.continue_btn);
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 Intent myIntent = new Intent(MainActivity.this, GameActivity.class);
+                myIntent.putExtra("continue_game", false);
                 startActivity(myIntent);
             }
         });
@@ -61,7 +63,14 @@ public class MainActivity extends Activity {
         });
         settings_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(MainActivity.this, SurrenderActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(myIntent);
+            }
+        });
+        continue_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent myIntent = new Intent(MainActivity.this, GameActivity.class);
+                myIntent.putExtra("continue_game", true);
                 startActivity(myIntent);
             }
         });

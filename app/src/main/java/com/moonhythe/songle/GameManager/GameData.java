@@ -31,19 +31,20 @@ public class GameData extends Activity {
     private static Context context = null;
 
     private int combos_downloaded=0;
+    private int total_time_seconds = 0;
 
     private Song song;
     private Lyrics lyrics;
     private Combo combo_1, combo_2, combo_3, combo_4, combo_5, current_combo;
     private GameLogic game;
     private GoogleMap mMap;
+    private Boolean continue_game = false;
     private List<Placemark> picked_placemarks = new ArrayList<Placemark>();
 
-    private int total_time_seconds = 0;
-
-    public GameData(Context context, GoogleMap mMap) {
+    public GameData(Context context, GoogleMap mMap, Boolean continue_game) {
         Log.i(TAG, "GameData created");
         this.context = context;
+        this.continue_game = continue_game;
         this.mMap = mMap;
         setupGame(0);
     }
@@ -61,7 +62,8 @@ public class GameData extends Activity {
                 setupCombo();
                 break;
             case 3:
-                current_combo = getCombo(1);
+                if(continue_game) applyGameState();  // Get previous state if continue game
+                else current_combo = getCombo(1);    // Else set up a new combo
                 game = new GameLogic(context, this, mMap);
         }
     }
@@ -73,28 +75,23 @@ public class GameData extends Activity {
     }
 
     public void onSongDownloaded(Song song){
-        Log.i(TAG, "Song downloaded " + song.getNumber());
         this.song = song;
-
         setupGame(1);
     }
 
     public void downloadLyrics(){
         // Get last_played song from shared preferences
-        String song_number = Preference.getSharedPreferenceString(context, "last_played", "01");
-        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song_number + "/words.txt";
-
+        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/words.txt";
         new DownloadLyrics(context, this).execute(stringUrl);
     }
 
     public void onLyricsDownloaded(Lyrics lyrics){
         this.lyrics = lyrics;
-
         setupGame(2);
     }
 
     public void setupCombo(){
-        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
+        String stringUrl;
         for(int i=1;i<=5;i++){
             stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
             stringUrl+= (i + ".kml");
@@ -162,7 +159,6 @@ public class GameData extends Activity {
     }
 
     public void incrementCombo(){
-        Log.i(TAG, "Incrementing combo");
         // Clear previous combo marks before adding the new one
         current_combo.clearMap();
         if(current_combo.getCombo()==5){
@@ -170,9 +166,7 @@ public class GameData extends Activity {
         }else{
             current_combo = getCombo(current_combo.getCombo()+1);
         }
-        Log.i(TAG, "Current combo updated");
         game.setupNewCombo();
-        Log.i(TAG, "New combo setted up");
     }
     public void resetCombo(){
         // Clear previous combo marks before adding the new one
@@ -228,7 +222,6 @@ public class GameData extends Activity {
         CharSequence str2_charS = str2;
         int treshold = 1 + str2.length()/5;
         int distance = levenshteinDistance(str1_charS, str2_charS);
-        Log.i(TAG, "Treshold is " + treshold + " and distance is " + distance);
         if(distance<=treshold) return true;
         else return false;
     }
@@ -295,6 +288,11 @@ public class GameData extends Activity {
         }
     }
 
+    public Boolean getContinue_game() {
+        return continue_game;
+    }
+
+
     public int getTotal_time_seconds() {
         return total_time_seconds;
     }
@@ -303,4 +301,45 @@ public class GameData extends Activity {
         this.total_time_seconds = total_time_seconds;
     }
 
+    public void saveGameState(){
+        // Save song number
+        Preference.setSharedPreferenceString(context, "song_number", song.getNumber());
+        // Save current combo number
+        Preference.setSharedPreferenceInt(context, "current_combo_number", current_combo.getCombo());
+        // Save current combo time left
+        Preference.setSharedPreferenceInt(context, "current_combo_time", current_combo.getSeconds_lasting());
+        // Save current combo picked words number
+        Preference.setSharedPreferenceInt(context, "current_combo_words_picked", current_combo.getCollected_words());
+        // Save picked placemarks
+        Preference.setSharedPreferenceString(context, "picked_placemarks", savePickedPlacemarks());
+        // Save current total time
+        Preference.setSharedPreferenceInt(context, "current_total_time", getTotal_time_seconds());
+    }
+
+    public void applyGameState(){
+        // Game time setup
+        setTotal_time_seconds(Preference.getSharedPreferenceInt(context, "current_total_time", 0));
+        // Picked placemarks setup
+        importPickedPlacemarks();
+        // Current combo setup
+        current_combo = getCombo(Preference.getSharedPreferenceInt(context, "current_combo_number", 1));
+        current_combo.setSeconds_lasting(Preference.getSharedPreferenceInt(context, "current_combo_time", 120));
+        current_combo.setCollected_words(Preference.getSharedPreferenceInt(context, "current_combo_words_picked", 0));
+    }
+
+    public void importPickedPlacemarks(){
+        for(String i : Preference.getSharedPreferenceString(context, "picked_placemarks", "").split(" ")){
+            for(Placemark k : combo_5.getPlacemarks()){
+                if(k.getName()==i) picked_placemarks.add(k);
+            }
+        }
+    }
+
+    public String savePickedPlacemarks(){
+        String picked = "";
+        for(Placemark placemark : picked_placemarks){
+            picked += placemark.getName() + " ";
+        }
+        return picked;
+    }
 }

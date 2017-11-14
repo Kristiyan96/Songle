@@ -3,6 +3,7 @@ package com.moonhythe.songle.Parser;
 import android.content.Context;
 import android.util.Xml;
 
+import com.moonhythe.songle.GameManager.GameData;
 import com.moonhythe.songle.Structure.Preference;
 import com.moonhythe.songle.Structure.Song;
 
@@ -25,13 +26,12 @@ public class SongParser {
     private static final String TAG = SongParser.class.getSimpleName();
     private static final String ns = null;
     private Context context;
+    private GameData dataManager;
 
-    public SongParser(Context context) {
+    public SongParser(Context context, GameData dataManager) {
         this.context = context;
+        this.dataManager = dataManager;
     }
-
-    // TODO: Pull this song_number from the shared preferences
-    String song_number = "04";
 
     public Song parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -46,10 +46,9 @@ public class SongParser {
     }
 
     private Song readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        Song song = null;
+        Song song;
         String all_songs_string = "";
         List<Song> album = new ArrayList<Song>();
-
 
         // Iterate songs and add them to a list
         parser.require(XmlPullParser.START_TAG, ns, "Songs");
@@ -67,17 +66,21 @@ public class SongParser {
             }
         }
 
-        String[] toPickFrom;
-        String guessed_songs_string = Preference.getSharedPreferenceString(context, "GUESSED_SONGS", "");
-        if(guessed_songs_string.length() != 0){
-            toPickFrom = removePlayedSongs(guessed_songs_string, all_songs_string);
-        } else{
-            toPickFrom = all_songs_string.split(" ");
-        }
+        if(dataManager.getContinue_game()){  // If continue game, get last played song
+            return album.get(Integer.parseInt(Preference.getSharedPreferenceString(context, "song_number", "01"))-1);
+        } else{                             // If new game, pick a random song
+            String[] toPickFrom;
+            String guessed_songs_string = Preference.getSharedPreferenceString(context, "GUESSED_SONGS", "");
+            if(guessed_songs_string.length() != 0){
+                toPickFrom = removePlayedSongs(guessed_songs_string, all_songs_string);
+            } else{
+                toPickFrom = all_songs_string.split(" ");
+            }
 
-        // picking a random song and returning it
-        Random rand = new Random();
-        return album.get(rand.nextInt(10000)%toPickFrom.length);
+            // picking a random song and returning it
+            Random rand = new Random();
+            return album.get(rand.nextInt(10000)%toPickFrom.length);
+        }
     }
 
 

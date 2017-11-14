@@ -170,10 +170,6 @@ public class GameLogic {
         }, delay);
     }
 
-    public void pauseTotalTimer(){
-        total_time_h.removeCallbacks(runnable); //stop handler when activity not visible
-    }
-
     public void startComboTimer(){
         combo_time_h.postDelayed(new Runnable() {
             public void run() {
@@ -188,10 +184,6 @@ public class GameLogic {
                 combo_time_h.postDelayed(runnable, delay);
             }
         }, delay);
-    }
-
-    public void pauseComboTimer(){
-        combo_time_h.removeCallbacks(runnable); //stop handler when activity not visible
     }
 
     /**
