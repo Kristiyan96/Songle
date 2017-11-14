@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.moonhythe.songle.Activity.GameActivity;
+import com.moonhythe.songle.Activity.SurrenderActivity;
 import com.moonhythe.songle.Activity.WinActivity;
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
@@ -202,6 +203,18 @@ public class GameData extends Activity {
             }
         }
         return false;
+    }
+
+    public void surrender(){
+        Intent intent = new Intent();
+
+        intent.putExtra("song_number", song.getNumber());
+        intent.putExtra("song_title", song.getTitle());
+        intent.putExtra("song_artist", song.getArtist());
+        intent.putExtra("song_url", song.getLink());
+
+        intent.setClass((GameActivity)context, SurrenderActivity.class);
+        context.startActivity(intent);
     }
 
     public void guessSong(String song_title){

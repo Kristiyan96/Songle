@@ -2,7 +2,6 @@ package com.moonhythe.songle.Activity;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -95,6 +94,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // Guess a song
         guessed_song = (EditText) findViewById(guess_song_text);
         guess_song = (Button) findViewById(guess_song_submit);
+        surrender = (Button) findViewById(surrender_btn);
 
         guess_song.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
@@ -103,13 +103,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // Surrender
-        surrender = (Button) findViewById(surrender_btn);
-
         surrender.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(GameActivity.this, SurrenderActivity.class);
-                startActivity(myIntent);
+                gameDataManager.surrender();
             }
         });
     }

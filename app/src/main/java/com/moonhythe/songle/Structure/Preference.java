@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
  * USAGE:
  *
  *         Preference.setSharedPreferenceString(this, "Key", "Value");
- *         Log.i(TAG, Preference.getSharedPreferenceString(this, "Key", "Default value"));
+ *         Preference.getSharedPreferenceString(this, "Key", "Default value");
  */
 public class Preference {
     private final static String PREF_FILE = "PREF";

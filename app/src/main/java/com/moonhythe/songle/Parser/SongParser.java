@@ -47,7 +47,6 @@ public class SongParser {
 
     private Song readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         Song song;
-        String all_songs_string = "";
         List<Song> album = new ArrayList<Song>();
 
         // Iterate songs and add them to a list
@@ -59,7 +58,6 @@ public class SongParser {
             String name = parser.getName();
             if (name.equals("Song")) {
                 song = readSong(parser);
-                all_songs_string += song.getNumber()+" ";
                 album.add(song);
             } else {
                 skip(parser);
@@ -68,44 +66,31 @@ public class SongParser {
 
         if(dataManager.getContinue_game()){  // If continue game, get last played song
             return album.get(Integer.parseInt(Preference.getSharedPreferenceString(context, "song_number", "01"))-1);
-        } else{                             // If new game, pick a random song
-            String[] toPickFrom;
-            String guessed_songs_string = Preference.getSharedPreferenceString(context, "GUESSED_SONGS", "");
-            if(guessed_songs_string.length() != 0){
-                toPickFrom = removePlayedSongs(guessed_songs_string, all_songs_string);
-            } else{
-                toPickFrom = all_songs_string.split(" ");
+        } else{                              // If new game, pick a random song
+            String removed_songs_string = Preference.getSharedPreferenceString(context, "removed_songs", "");
+            if(removed_songs_string.length() != 0){
+                album = filterPlayableSongs(removed_songs_string, album);
             }
 
             // picking a random song and returning it
             Random rand = new Random();
-            return album.get(rand.nextInt(10000)%toPickFrom.length);
+            return album.get(rand.nextInt(10000)%album.size());
         }
     }
 
 
-    public String[] removePlayedSongs(String played, String all){
-        String[] played_songs, all_songs;
-        int counter = 0;
-        boolean duplicate = false;
+    public List<Song> filterPlayableSongs(String removed, List<Song> album){
+        String[] removed_songs = removed.split(" ");
 
-        played_songs = played.split(" ");
-        all_songs = all.split(" ");
-
-        String[] result = new String[all_songs.length - played_songs.length];
-
-        // O(n^2) but I rely on the fact that all_songs*played_songs is rather small
-        for(int i=0; i<all_songs.length; i++){
-            for(int k=0; k<played_songs.length; k++){
-                if(Integer.parseInt(played_songs[k]) == Integer.parseInt(all_songs[i])) duplicate = true;
+        for(String r : removed_songs){
+            for(Song s : album){
+                if(s.getNumber().equals(r)){
+                    album.remove(s);
+                    break;
+                }
             }
-            if(!duplicate){
-                result[counter] = all_songs[i];
-                counter++;
-            }
-            duplicate = false;
         }
-        return result;
+        return album;
     }
 
     private Song readSong(XmlPullParser parser) throws XmlPullParserException, IOException {
