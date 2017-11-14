@@ -28,6 +28,11 @@ public class SurrenderActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get layout elements
+        show_song_btn = (Button) findViewById(R.id.show_song_btn);
+        info = (LinearLayout) findViewById(R.id.song_info);
+        song_info = (TextView) findViewById(R.id.song_title);
+
         // Get song info
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -42,13 +47,11 @@ public class SurrenderActivity extends AppCompatActivity {
             song_url    = "http://www.youtube.com";
         }
 
-        show_song_btn = (Button) findViewById(R.id.show_song_btn);
-        info = (LinearLayout) findViewById(R.id.song_info);
-        song_info = (TextView) findViewById(R.id.song_title);
-
+        // Set song info
         song_info.setText(song_artist + " - " + song_title);
         // TODO: make the image button a link to youtube video
 
+        // Button listeners
         show_song_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 if(!song_showed){

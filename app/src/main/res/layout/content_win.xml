@@ -39,6 +39,7 @@
                 android:background="#fff"
                 android:text="Back to Main Menu"
                 android:textAlignment="center"
+                android:id="@+id/back_to_main"
                 android:textSize="17dp"
                 android:textColor="@color/primary_dark"/>
             

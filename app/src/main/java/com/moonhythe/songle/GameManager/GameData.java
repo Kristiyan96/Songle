@@ -7,7 +7,6 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.moonhythe.songle.Activity.GameActivity;
 import com.moonhythe.songle.Activity.SurrenderActivity;
 import com.moonhythe.songle.Activity.WinActivity;
 import com.moonhythe.songle.Downloader.DownloadLyrics;
@@ -205,15 +204,20 @@ public class GameData extends Activity {
         return false;
     }
 
-    public void surrender(){
-        Intent intent = new Intent();
-
+    public Intent putSongInfo(Intent intent){
         intent.putExtra("song_number", song.getNumber());
         intent.putExtra("song_title", song.getTitle());
         intent.putExtra("song_artist", song.getArtist());
         intent.putExtra("song_url", song.getLink());
+        intent.putExtra("total_time", total_time_seconds);
 
-        intent.setClass((GameActivity)context, SurrenderActivity.class);
+        return intent;
+    }
+
+    public void surrender(){
+        Intent intent = new Intent();
+        intent = putSongInfo(intent);
+        intent.setClass(context, SurrenderActivity.class);
         context.startActivity(intent);
     }
 
@@ -221,7 +225,8 @@ public class GameData extends Activity {
         if(closeEnough(song.getTitle(),song_title)){
             // Jump to congratulations screen
             Intent intent = new Intent();
-            intent.setClass((GameActivity)context, WinActivity.class);
+            intent = putSongInfo(intent);
+            intent.setClass(context, WinActivity.class);
             context.startActivity(intent);
         }else{
             game.showMessage("Wrong", "That's not the song title, Try again.");
