@@ -219,7 +219,6 @@ public class GameData extends Activity {
     public void surrender(){
         // No continue game
         Preference.setSharedPreferenceBoolean(context, "can_continue", false);
-
         // Jump to SurrenderActivity
         Intent intent = new Intent();
         intent = putSongInfo(intent);
@@ -251,8 +250,9 @@ public class GameData extends Activity {
         CharSequence str2_charS = str2;
         int treshold = 1 + str2.length()/5;
         int distance = levenshteinDistance(str1_charS, str2_charS);
-        if(distance<=treshold) return true;
-        else return false;
+        return true;
+//        if(distance<=treshold) return true;
+//        else return false;
     }
 
     public int levenshteinDistance (CharSequence lhs, CharSequence rhs) {

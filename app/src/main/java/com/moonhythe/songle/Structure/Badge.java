@@ -43,9 +43,9 @@ public class Badge {
         }
 
         // Getting
-        String current_songs  = Preference.getSharedPreferenceString(context, "badge_songs", "") + "," + song_info;
-        String current_times  = Preference.getSharedPreferenceString(context, "badge_times", "") + "," + time;
-        String current_badges = Preference.getSharedPreferenceString(context, "badge_badges", "") + "," + badge;
+        String current_songs  = Preference.getSharedPreferenceString(context, "badge_songs", "") + "|" + song_info;
+        String current_times  = Preference.getSharedPreferenceString(context, "badge_times", "") + "|" + time;
+        String current_badges = Preference.getSharedPreferenceString(context, "badge_badges", "") + "|" + badge;
 
         // Setting
         Preference.setSharedPreferenceString(context, "badge_songs", current_songs);
