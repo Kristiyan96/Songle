@@ -1,12 +1,14 @@
 package com.moonhythe.songle.Activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.app.AlertDialog;
 
 import com.moonhythe.songle.R;
 import com.moonhythe.songle.Structure.Preference;
@@ -36,9 +38,31 @@ public class MainActivity extends Activity {
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(MainActivity.this, GameActivity.class);
-                myIntent.putExtra("continue_game", false);
-                startActivity(myIntent);
+                if(Preference.getSharedPreferenceBoolean(MainActivity.this, "can_continue", false)){
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Warning!");
+                    alertDialog.setMessage("By clicking 'Continue' you will lose the progress of your previous game.");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Continue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent myIntent = new Intent(MainActivity.this, GameActivity.class);
+                                    myIntent.putExtra("continue_game", false);
+                                    startActivity(myIntent);
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else{
+                    Intent myIntent = new Intent(MainActivity.this, GameActivity.class);
+                    myIntent.putExtra("continue_game", false);
+                    startActivity(myIntent);
+                }
             }
         });
         instructions_btn.setOnClickListener(new View.OnClickListener() {
