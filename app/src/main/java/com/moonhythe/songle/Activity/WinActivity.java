@@ -106,4 +106,10 @@ public class WinActivity extends AppCompatActivity {
         Badge badge = new Badge(time, badge_type, artist_title, badge_text_str);
         Preference.addBadge(this, badge);
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent myIntent = new Intent(WinActivity.this, MainActivity.class);
+        startActivity(myIntent);
+    }
 }

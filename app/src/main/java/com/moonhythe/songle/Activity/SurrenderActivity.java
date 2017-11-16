@@ -74,4 +74,10 @@ public class SurrenderActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent myIntent = new Intent(SurrenderActivity.this, MainActivity.class);
+        startActivity(myIntent);
+    }
 }
