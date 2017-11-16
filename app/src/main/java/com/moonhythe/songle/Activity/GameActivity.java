@@ -175,7 +175,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onPause() {
         super.onPause();
-        gameDataManager.saveGameState();
+
+        try{
+            gameDataManager.saveGameState();
+        } catch (Exception e){
+            Log.i(TAG, "Can't save game state");
+        }
+
         Log.i(TAG, "Pause maps activity");
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
