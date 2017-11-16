@@ -6,8 +6,7 @@
     <string name="title_activity_game">Map</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="large_text">
-        "Material is the metaphor.\n\n"
-
+        "Collect the placemarks on the map to open words from the lyrics of a famous song. Your objective is to guess that song's title. \n If you are fast enough and you complete the challenges printed on the bottom of the game screen you will advance your Combo which will give you advantages - the placemarks design will give you a hint of how important a word is, as well as, the map will reveal more of the lyrics' words. Try to guess the song as fast as you can and you will receive a better badge!"
     </string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_instructions">InstructionsActivity</string>
