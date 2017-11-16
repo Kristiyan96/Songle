@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kris on 05/11/17.
  *
@@ -21,18 +24,20 @@ public class Preference {
     /**
      * Add a badge to shared preference
      *
-     * @param key   - Key to set shared preference
+     * @param context - Activity context
      * @param badge - Badge to add
      */
 
-    public static void addBadge(Context context, String key, Badge badge){
+    public static void addBadge(Context context, Badge badge){
         SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
         SharedPreferences.Editor editor = settings.edit();
 
+        int badges_count = settings.getInt("badges_count", 0);
+        int current_badge = badges_count + 1;
+
         Gson gson = new Gson();
         String json = gson.toJson(badge);
-        Log.i(TAG, json);
-        editor.putString(key, json);
+        editor.putString("badge_" + current_badge, json);
         editor.apply();
     }
 
@@ -73,6 +78,29 @@ public class Preference {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(key, value);
         editor.apply();
+    }
+
+    /**
+     *
+     * @param context - Activity context
+     * @return badges - All current badges
+     */
+    public static List<Badge> getBadges(Context context){
+        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
+        Gson gson = new Gson();
+        String json;
+        Badge badge;
+
+        List<Badge> badges = new ArrayList<Badge>();
+        int badges_count = settings.getInt("badges_count", 0);
+
+        for(int i=1; i<=badges_count;i++){
+            json = settings.getString("badge_" + i, "");
+            badge = gson.fromJson(json, Badge.class);
+            badges.add(badge);
+        }
+        Log.i(TAG, "Returning badges count is " + badges.size());
+        return badges;
     }
 
     /**

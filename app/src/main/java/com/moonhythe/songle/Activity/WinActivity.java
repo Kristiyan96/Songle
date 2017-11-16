@@ -95,6 +95,6 @@ public class WinActivity extends AppCompatActivity {
 
         // Add badge to sharedpreferences
         Badge badge = new Badge(time, badge_type, artist_title, badge_text_str);
-        Preference.addBadge(this, "badges", badge);
+        Preference.addBadge(this, badge);
     }
 }
