@@ -12,7 +12,6 @@ import com.moonhythe.songle.Activity.WinActivity;
 import com.moonhythe.songle.Downloader.DownloadLyrics;
 import com.moonhythe.songle.Downloader.DownloadMap;
 import com.moonhythe.songle.Downloader.DownloadSong;
-import com.moonhythe.songle.Structure.Badge;
 import com.moonhythe.songle.Structure.Combo;
 import com.moonhythe.songle.Structure.Lyrics;
 import com.moonhythe.songle.Structure.Placemark;
@@ -228,9 +227,6 @@ public class GameData extends Activity {
 
     public void guessSong(String song_title){
         if(closeEnough(song.getTitle(),song_title)){
-            // Add badge
-            Badge badge = new Badge();
-            badge.addNew(context, song.getArtist()+" - " + song.getTitle(), total_time_seconds);
             // No continue game
             Preference.setSharedPreferenceBoolean(context, "can_continue", false);
             // Jump to congratulations screen

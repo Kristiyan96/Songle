@@ -2,6 +2,9 @@ package com.moonhythe.songle.Structure;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 /**
  * Created by kris on 05/11/17.
@@ -13,6 +16,25 @@ import android.content.SharedPreferences;
  */
 public class Preference {
     private final static String PREF_FILE = "PREF";
+    private static final String TAG = Preference.class.getSimpleName();
+
+    /**
+     * Add a badge to shared preference
+     *
+     * @param key   - Key to set shared preference
+     * @param badge - Badge to add
+     */
+
+    public static void addBadge(Context context, String key, Badge badge){
+        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(badge);
+        Log.i(TAG, json);
+        editor.putString(key, json);
+        editor.apply();
+    }
 
     /**
      * Set a string shared preference

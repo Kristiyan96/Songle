@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moonhythe.songle.R;
+import com.moonhythe.songle.Structure.Badge;
+import com.moonhythe.songle.Structure.Preference;
 
 import java.time.LocalTime;
 
@@ -18,7 +19,7 @@ public class WinActivity extends AppCompatActivity {
 
     private static final String TAG = WinActivity.class.getSimpleName();
 
-    private String song_number, song_artist, song_title, song_url;
+    private String song_number, song_artist, song_title, song_url, badge_type, artist_title, badge_text_str;
     private int total_time;
 
 
@@ -42,7 +43,6 @@ public class WinActivity extends AppCompatActivity {
 
 
         // Get song info
-
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             song_number = bundle.getString("song_number");
@@ -59,23 +59,26 @@ public class WinActivity extends AppCompatActivity {
         }
 
         // Set badge info
-
+        artist_title = song_artist + " - " + song_title;
         LocalTime timeOfDay = LocalTime.ofSecondOfDay(total_time);
         String time = timeOfDay.toString();
-        Log.i(TAG, "Substring is " + time.substring(0,1));
         if(time.substring(0,2).equals("00")) time = time.substring(3);  // Remove hours if unnecessary
 
         if(total_time<=600){ // Gold
             badge_image.setImageResource(R.drawable.gold);
-            badge_text.setText("You earned a Gold Badge!");
+            badge_type = "Gold";
         } else if(total_time<=900){ // Silver
             badge_image.setImageResource(R.drawable.silver);
-            badge_text.setText("You earned a Silver Badge!");
+            badge_type = "Silver";
         } else {  // Bronze
             badge_image.setImageResource(R.drawable.bronze);
-            badge_text.setText("You earned a Bronze Badge!");
+            badge_type = "Bronze";
         }
-        badge_info.setText("You guessed " + song_artist + " - " + song_title + " in " + time + ".");
+
+        badge_text_str = "You earned a " + badge_type + " Badge!";
+
+        badge_text.setText(badge_text_str);
+        badge_info.setText("You guessed " + artist_title + " in " + time + ".");
 
         // TODO: Set button to youtube
 
@@ -89,5 +92,9 @@ public class WinActivity extends AppCompatActivity {
         });
 
         // TODO: Listener for button to youtube
+
+        // Add badge to sharedpreferences
+        Badge badge = new Badge(time, badge_type, artist_title, badge_text_str);
+        Preference.addBadge(this, "badges", badge);
     }
 }
