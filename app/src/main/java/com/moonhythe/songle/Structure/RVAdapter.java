@@ -1,4 +1,4 @@
-package com.moonhythe.songle.Activity;
+package com.moonhythe.songle.Structure;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moonhythe.songle.R;
-import com.moonhythe.songle.Structure.Badge;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.BadgeViewHolder> {
 
     List<Badge> badges;
 
-    RVAdapter(List<Badge> badges){
+    public RVAdapter(List<Badge> badges){
         this.badges = badges;
     }
 

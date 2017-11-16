@@ -25,6 +25,7 @@
                 android:layout_height="150dp"
                 android:src="@drawable/play_youtube"
                 android:text="Play in YouTube"
+                android:id="@+id/play_song"
                 android:background="#fff"/>
             <TextView
                 android:layout_width="match_parent"

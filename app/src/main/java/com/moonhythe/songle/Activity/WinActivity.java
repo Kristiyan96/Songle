@@ -1,11 +1,13 @@
 package com.moonhythe.songle.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +16,8 @@ import com.moonhythe.songle.Structure.Badge;
 import com.moonhythe.songle.Structure.Preference;
 
 import java.time.LocalTime;
+
+import static com.moonhythe.songle.R.id.play_song;
 
 public class WinActivity extends AppCompatActivity {
 
@@ -26,6 +30,7 @@ public class WinActivity extends AppCompatActivity {
     private TextView badge_info, badge_text;
     private ImageView badge_image;
     private Button back_to_main_btn;
+    private ImageButton play_song;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,7 @@ public class WinActivity extends AppCompatActivity {
         badge_text = (TextView) findViewById(R.id.badge_text);
         badge_info = (TextView) findViewById(R.id.badge_info);
         back_to_main_btn = (Button) findViewById(R.id.back_to_main);
+        play_song = (ImageButton) findViewById(R.id.play_song);
         // TODO: Button to youtube video
 
 
@@ -59,6 +65,7 @@ public class WinActivity extends AppCompatActivity {
         }
 
         // Set badge info
+
         artist_title = song_artist + " - " + song_title;
         LocalTime timeOfDay = LocalTime.ofSecondOfDay(total_time);
         String time = timeOfDay.toString();
@@ -80,8 +87,6 @@ public class WinActivity extends AppCompatActivity {
         badge_text.setText(badge_text_str);
         badge_info.setText("You guessed " + artist_title + " in " + time + ".");
 
-        // TODO: Set button to youtube
-
         // Button listeners
 
         back_to_main_btn.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +96,11 @@ public class WinActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Listener for button to youtube
+        play_song.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(song_url)));
+            }
+        });
 
         // Add badge to sharedpreferences
         Badge badge = new Badge(time, badge_type, artist_title, badge_text_str);

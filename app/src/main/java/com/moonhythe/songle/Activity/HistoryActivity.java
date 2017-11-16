@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.moonhythe.songle.R;
 import com.moonhythe.songle.Structure.Badge;
 import com.moonhythe.songle.Structure.Preference;
+import com.moonhythe.songle.Structure.RVAdapter;
 
 import java.util.List;
 

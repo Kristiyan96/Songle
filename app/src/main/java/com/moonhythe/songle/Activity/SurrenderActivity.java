@@ -1,10 +1,13 @@
 package com.moonhythe.songle.Activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ public class SurrenderActivity extends AppCompatActivity {
 
     private String song_number, song_artist, song_title, song_url;
     private Button show_song_btn;
+    private ImageButton play_song;
     private LinearLayout info;
     private TextView song_info;
     private boolean song_showed = false;
@@ -30,6 +34,7 @@ public class SurrenderActivity extends AppCompatActivity {
 
         // Get layout elements
         show_song_btn = (Button) findViewById(R.id.show_song_btn);
+        play_song = (ImageButton) findViewById(R.id.play_song);
         info = (LinearLayout) findViewById(R.id.song_info);
         song_info = (TextView) findViewById(R.id.song_title);
 
@@ -49,7 +54,6 @@ public class SurrenderActivity extends AppCompatActivity {
 
         // Set song info
         song_info.setText(song_artist + " - " + song_title);
-        // TODO: make the image button a link to youtube video
 
         // Button listeners
         show_song_btn.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +65,12 @@ public class SurrenderActivity extends AppCompatActivity {
                     info.setVisibility(View.VISIBLE);
                     song_showed = true;  // avoid adding a song multiple times
                 }
+            }
+        });
+
+        play_song.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(song_url)));
             }
         });
     }
