@@ -47,21 +47,21 @@
             <TextView
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
-                android:text="2 songs"
                 android:textAlignment="center"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_weight="1"
-                android:text="1 song"
-                android:textAlignment="center"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/amount_silver"/>
             <TextView
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:layout_width="fill_parent"
-                android:text="4 songs"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/amount_gold"/>
+            <TextView
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/amount_bronze"/>
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 

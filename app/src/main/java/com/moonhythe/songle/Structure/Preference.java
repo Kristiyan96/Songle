@@ -29,16 +29,13 @@ public class Preference {
      */
 
     public static void addBadge(Context context, Badge badge){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        int badges_count = settings.getInt("badges_count", 0);
+        int badges_count = getSharedPreferenceInt(context, "badges_count", 0);
         int current_badge = badges_count + 1;
+        setSharedPreferenceInt(context, "badges_count", current_badge);
 
         Gson gson = new Gson();
         String json = gson.toJson(badge);
-        editor.putString("badge_" + current_badge, json);
-        editor.apply();
+        setSharedPreferenceString(context, "badge_" + current_badge, json);
     }
 
     /**
@@ -86,18 +83,15 @@ public class Preference {
      * @return badges - All current badges
      */
     public static List<Badge> getBadges(Context context){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, 0);
         Gson gson = new Gson();
         String json;
-        Badge badge;
 
         List<Badge> badges = new ArrayList<Badge>();
-        int badges_count = settings.getInt("badges_count", 0);
+        int badges_count = getSharedPreferenceInt(context, "badges_count", 0);
 
         for(int i=1; i<=badges_count;i++){
-            json = settings.getString("badge_" + i, "");
-            badge = gson.fromJson(json, Badge.class);
-            badges.add(badge);
+            json = getSharedPreferenceString(context, "badge_" + i, "");
+            badges.add(gson.fromJson(json, Badge.class));
         }
         Log.i(TAG, "Returning badges count is " + badges.size());
         return badges;

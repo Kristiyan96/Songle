@@ -246,9 +246,8 @@ public class GameData extends Activity {
         CharSequence str2_charS = str2;
         int treshold = 1 + str2.length()/5;
         int distance = levenshteinDistance(str1_charS, str2_charS);
-        return true;
-//        if(distance<=treshold) return true;
-//        else return false;
+        if(distance<=treshold) return true;
+        else return false;
     }
 
     public int levenshteinDistance (CharSequence lhs, CharSequence rhs) {
