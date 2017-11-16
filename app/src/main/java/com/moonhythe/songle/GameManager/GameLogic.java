@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -94,6 +95,8 @@ public class GameLogic {
                 change = true;
                 data.addPickedPlacemark(placemark);
                 placemark.deleteMarker();
+                Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(200);
             }
         }
         if(change) onCurrentComboChange();
