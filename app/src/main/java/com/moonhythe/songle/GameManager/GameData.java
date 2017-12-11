@@ -41,6 +41,11 @@ public class GameData extends Activity {
     private Boolean continue_game = false;
     private List<Placemark> picked_placemarks = new ArrayList<Placemark>();
 
+    /**
+     * Game setup
+     */
+
+    // Constructor for Data Manager of current session
     public GameData(Context context, GoogleMap mMap, Boolean continue_game) {
         Log.i(TAG, "GameData created");
         this.context = context;
@@ -50,6 +55,7 @@ public class GameData extends Activity {
         setupGame(0);
     }
 
+    // Downloading the resources for the played song and creating the Logic Manager
     public void setupGame(int step){
         Log.i(TAG, "Enter setupGame with step " + step);
         switch(step) {
@@ -69,28 +75,6 @@ public class GameData extends Activity {
         }
     }
 
-    public void downloadSong(){
-        // Pick, download and parse a song
-        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/songs.xml";
-        new DownloadSong(context, this).execute(stringUrl);
-    }
-
-    public void onSongDownloaded(Song song){
-        this.song = song;
-        setupGame(1);
-    }
-
-    public void downloadLyrics(){
-        // Get last_played song from shared preferences
-        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/words.txt";
-        new DownloadLyrics(context, this).execute(stringUrl);
-    }
-
-    public void onLyricsDownloaded(Lyrics lyrics){
-        this.lyrics = lyrics;
-        setupGame(2);
-    }
-
     public void setupCombo(){
         String stringUrl;
         for(int i=1;i<=5;i++){
@@ -99,6 +83,26 @@ public class GameData extends Activity {
             new DownloadMap(context, this, i).execute(stringUrl);
         }
     }
+
+    /**
+     * Downloaders
+     */
+
+    public void downloadSong(){
+        // Pick, download and parse a song
+        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/songs.xml";
+        new DownloadSong(context, this).execute(stringUrl);
+    }
+
+    public void downloadLyrics(){
+        // Get last_played song from shared preferences
+        String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/words.txt";
+        new DownloadLyrics(context, this).execute(stringUrl);
+    }
+
+    /**
+     * Callbacks
+     */
 
     public void onComboSetup(int which_combo, List<Placemark> placemarks){
         switch (which_combo){
@@ -121,15 +125,70 @@ public class GameData extends Activity {
         waitForAllCombos();
     }
 
-    public void waitForAllCombos(){
-        combos_downloaded++;
-        if(combos_downloaded==5){
-            setupGame(3);
-        }
+    public void onSongDownloaded(Song song){
+        this.song = song;
+        setupGame(1);
+    }
+
+    public void onLyricsDownloaded(Lyrics lyrics){
+        this.lyrics = lyrics;
+        setupGame(2);
     }
 
     public void updateLocation(Location location){
         if(game != null) game.onLocationChanged(location);
+        else setupGame(0); // setting the game if a new session started
+    }
+
+    /**
+     * Getters
+     */
+
+    public Combo getCurrent_combo(){
+        return current_combo;
+    }
+
+    public String getLyricsText(){
+        String lyrics_text = "";
+        List<String[]> lyrics_lines = lyrics.getLyrics();
+        for(int i=0;i<lyrics_lines.size();i++){
+            for(int k=1;k<lyrics_lines.get(i).length;k++){
+                if(isWordOpened(i+1,k)) lyrics_text+=lyrics_lines.get(i)[k]+" ";
+                else lyrics_text+= "....." + " ";
+            }
+            lyrics_text+="\n";
+        }
+
+        return lyrics_text;
+    }
+    public Lyrics getLyrics() {
+        return lyrics;
+    }
+
+    public Combo getCombo(int comb) {
+        // send back a copy of the original saved combo
+        switch(comb){
+            case 1:
+                return new Combo(1, combo_1.getPlacemarks(), this, game);
+            case 2:
+                return new Combo(2, combo_2.getPlacemarks(), this, game);
+            case 3:
+                return new Combo(3, combo_3.getPlacemarks(), this, game);
+            case 4:
+                return new Combo(4, combo_4.getPlacemarks(), this, game);
+            case 5:
+                return new Combo(5, combo_5.getPlacemarks(), this, game);
+            default:
+                return new Combo(1, combo_1.getPlacemarks(), this, game);
+        }
+    }
+
+    public Boolean getContinue_game() {
+        return continue_game;
+    }
+
+    public int getTotal_time_seconds() {
+        return total_time_seconds;
     }
 
     public List<Placemark> getUnpickedPlacemarks(){
@@ -150,13 +209,45 @@ public class GameData extends Activity {
         }
     }
 
-    public void addPickedPlacemark(Placemark placemark){
-        picked_placemarks.add(placemark);
-        current_combo.setCollected_words(current_combo.getCollected_words()+1);
+    /**
+     * Setters
+     */
+
+    public void setTotal_time_seconds(int total_time_seconds) {
+        this.total_time_seconds = total_time_seconds;
     }
 
-    public Combo getCurrent_combo(){
-        return current_combo;
+    public void saveGameState(){
+        Preference.setSharedPreferenceString(context, "song_number", song.getNumber());
+        Preference.setSharedPreferenceInt(context, "current_combo_number", current_combo.getCombo());
+        Preference.setSharedPreferenceInt(context, "current_combo_time", current_combo.getSeconds_lasting());
+        Preference.setSharedPreferenceInt(context, "current_combo_words_picked", current_combo.getCollected_words());
+        Preference.setSharedPreferenceString(context, "picked_placemarks", savePickedPlacemarks());
+        Preference.setSharedPreferenceInt(context, "current_total_time", getTotal_time_seconds());
+    }
+
+    public void applyGameState(){
+        setTotal_time_seconds(Preference.getSharedPreferenceInt(context, "current_total_time", 0));
+        importPickedPlacemarks();
+        current_combo = getCombo(Preference.getSharedPreferenceInt(context, "current_combo_number", 1));
+        current_combo.setSeconds_lasting(Preference.getSharedPreferenceInt(context, "current_combo_time", 120));
+        current_combo.setCollected_words(Preference.getSharedPreferenceInt(context, "current_combo_words_picked", 0));
+    }
+
+    public void importPickedPlacemarks(){
+        for(String i : Preference.getSharedPreferenceString(context, "picked_placemarks", "").split(" ")){
+            for(Placemark k : combo_5.getPlacemarks()){
+                if(k.getName().equals(i)) picked_placemarks.add(k);
+            }
+        }
+    }
+
+    public String savePickedPlacemarks(){
+        String picked = "";
+        for(Placemark placemark : picked_placemarks){
+            picked += placemark.getName() + " ";
+        }
+        return picked;
     }
 
     public void incrementCombo(){
@@ -176,18 +267,21 @@ public class GameData extends Activity {
         game.setupNewCombo();
     }
 
-    public String getLyricsText(){
-        String lyrics_text = "";
-        List<String[]> lyrics_lines = lyrics.getLyrics();
-        for(int i=0;i<lyrics_lines.size();i++){
-            for(int k=1;k<lyrics_lines.get(i).length;k++){
-                if(isWordOpened(i+1,k)) lyrics_text+=lyrics_lines.get(i)[k]+" ";
-                else lyrics_text+= "....." + " ";
-            }
-            lyrics_text+="\n";
-        }
+    public void addPickedPlacemark(Placemark placemark){
+        picked_placemarks.add(placemark);
+        current_combo.setCollected_words(current_combo.getCollected_words()+1);
+    }
 
-        return lyrics_text;
+    /**
+     * Logic functions
+     */
+
+    // Waiting for all combos to download before continuing to next step in set up
+    public void waitForAllCombos(){
+        combos_downloaded++;
+        if(combos_downloaded==5){
+            setupGame(3);
+        }
     }
 
     public Boolean isWordOpened(int row, int column){
@@ -276,70 +370,4 @@ public class GameData extends Activity {
         return cost[len0 - 1];
     }
 
-    public Lyrics getLyrics() {
-        return lyrics;
-    }
-
-    public Combo getCombo(int comb) {
-        // send back a copy of the original saved combo
-        switch(comb){
-            case 1:
-                return new Combo(1, combo_1.getPlacemarks(), this, game);
-            case 2:
-                return new Combo(2, combo_2.getPlacemarks(), this, game);
-            case 3:
-                return new Combo(3, combo_3.getPlacemarks(), this, game);
-            case 4:
-                return new Combo(4, combo_4.getPlacemarks(), this, game);
-            case 5:
-                return new Combo(5, combo_5.getPlacemarks(), this, game);
-            default:
-                return new Combo(1, combo_1.getPlacemarks(), this, game);
-        }
-    }
-
-    public Boolean getContinue_game() {
-        return continue_game;
-    }
-
-    public int getTotal_time_seconds() {
-        return total_time_seconds;
-    }
-
-    public void setTotal_time_seconds(int total_time_seconds) {
-        this.total_time_seconds = total_time_seconds;
-    }
-
-    public void saveGameState(){
-        Preference.setSharedPreferenceString(context, "song_number", song.getNumber());
-        Preference.setSharedPreferenceInt(context, "current_combo_number", current_combo.getCombo());
-        Preference.setSharedPreferenceInt(context, "current_combo_time", current_combo.getSeconds_lasting());
-        Preference.setSharedPreferenceInt(context, "current_combo_words_picked", current_combo.getCollected_words());
-        Preference.setSharedPreferenceString(context, "picked_placemarks", savePickedPlacemarks());
-        Preference.setSharedPreferenceInt(context, "current_total_time", getTotal_time_seconds());
-    }
-
-    public void applyGameState(){
-        setTotal_time_seconds(Preference.getSharedPreferenceInt(context, "current_total_time", 0));
-        importPickedPlacemarks();
-        current_combo = getCombo(Preference.getSharedPreferenceInt(context, "current_combo_number", 1));
-        current_combo.setSeconds_lasting(Preference.getSharedPreferenceInt(context, "current_combo_time", 120));
-        current_combo.setCollected_words(Preference.getSharedPreferenceInt(context, "current_combo_words_picked", 0));
-    }
-
-    public void importPickedPlacemarks(){
-        for(String i : Preference.getSharedPreferenceString(context, "picked_placemarks", "").split(" ")){
-            for(Placemark k : combo_5.getPlacemarks()){
-                if(k.getName().equals(i)) picked_placemarks.add(k);
-            }
-        }
-    }
-
-    public String savePickedPlacemarks(){
-        String picked = "";
-        for(Placemark placemark : picked_placemarks){
-            picked += placemark.getName() + " ";
-        }
-        return picked;
-    }
 }
