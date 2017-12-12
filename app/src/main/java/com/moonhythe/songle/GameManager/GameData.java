@@ -75,15 +75,6 @@ public class GameData extends Activity {
         }
     }
 
-    public void setupCombo(){
-        String stringUrl;
-        for(int i=1;i<=5;i++){
-            stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
-            stringUrl+= (i + ".kml");
-            new DownloadMap(context, this, i).execute(stringUrl);
-        }
-    }
-
     /**
      * Downloaders
      */
@@ -98,6 +89,15 @@ public class GameData extends Activity {
         // Get last_played song from shared preferences
         String stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/words.txt";
         new DownloadLyrics(context, this).execute(stringUrl);
+    }
+
+    public void setupCombo(){
+        String stringUrl;
+        for(int i=1;i<=5;i++){
+            stringUrl = "http://www.inf.ed.ac.uk/teaching/courses/selp/data/songs/" + song.getNumber() + "/map";
+            stringUrl+= (i + ".kml");
+            new DownloadMap(context, this, i).execute(stringUrl);
+        }
     }
 
     /**
